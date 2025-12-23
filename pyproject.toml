@@ -70,8 +70,8 @@ select = [
 ignore = []
 
 [tool.ruff.lint.isort]
-# Use a single line import style
-force-single-line = false
+# Force one import per line
+force-single-line = true
 # Known first party packages
 known-first-party = []
 
