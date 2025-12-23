@@ -21,7 +21,12 @@ async def my_agent(ctx: agents.JobContext):
     tts = elevenlabs.TTS(voice_id="CwhRBWXzGAHq8TQ4Fs17")
     vad = silero.VAD.load()
     session = AgentSession(
-        stt=sst, llm=llm, tts=tts, vad=vad, min_endpointing_delay=0, preemptive_generation=True
+        stt=sst,
+        llm=llm,
+        tts=tts,
+        vad=vad,
+        min_endpointing_delay=0,
+        preemptive_generation=True,
     )
     await session.start(room=ctx.room, agent=Assistant())
     await session.say(text="Hello! Thanks for calling. Do you want to hear a joke?")
