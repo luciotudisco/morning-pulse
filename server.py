@@ -16,19 +16,15 @@ server = AgentServer()
 
 @server.rtc_session(agent_name="morning-pulse-agent")
 async def my_agent(ctx: agents.JobContext):
+    sst = deepgram.STT(model="nova-3")
+    llm = openai.LLM(model="gpt-4.1-mini")
+    tts = elevenlabs.TTS(voice_id="CwhRBWXzGAHq8TQ4Fs17")
+    vad = silero.VAD.load()
     session = AgentSession(
-        stt=deepgram.STT(model="nova-3"),
-        llm=openai.LLM(model="gpt-4.1-mini"),
-        tts=elevenlabs.TTS(model="eleven_turbo_v2_5", voice_id="CwhRBWXzGAHq8TQ4Fs17"),
-        vad=silero.VAD.load(),
-        min_endpointing_delay=0,
+        stt=sst, llm=llm, tts=tts, vad=vad, min_endpointing_delay=0, preemptive_generation=True
     )
-
-    await session.start(
-        room=ctx.room,
-        agent=Assistant(),
-    )
-    await session.generate_reply(instructions="Greet the user and offer your assistance.")
+    await session.start(room=ctx.room, agent=Assistant())
+    await session.say(text="Hello! Thanks for calling. Do you want to hear a joke?")
 
 
 if __name__ == "__main__":
