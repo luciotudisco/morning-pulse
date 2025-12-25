@@ -4,4 +4,7 @@ version = "0.1.0"
 description = "Async workflows for the morning pulse projects"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "celery>=5.4.0",
+    "redis>=5.0.0",
+]
