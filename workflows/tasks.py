@@ -3,7 +3,7 @@ import os
 from celery import Celery
 
 # Get Redis URL from environment (Heroku sets REDIS_URL)
-redis_url = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+redis_url = os.getenv("REDISCLOUD_URL", "redis://localhost:6379/0")
 
 # Create Celery app
 app = Celery(
