@@ -15,7 +15,7 @@ app.conf.update(
     beat_schedule={
         "hello-world-every-5-minutes": {
             "task": "tasks.hello_world",
-            "schedule": 1.0,  # Run every 5 minutes (300 seconds)
+            "schedule": 5.0,  # Run every 5 minutes (300 seconds)
         },
     },
 )
