@@ -1,7 +1,6 @@
 from flask import jsonify
 
 from api import bp
-from models.database import database
 from models.scheduled_call import ScheduledCall
 
 
@@ -20,26 +19,4 @@ def home():
 @bp.route("/scheduled-calls", methods=["GET"])
 def get_scheduled_calls():
     """Retrieve all scheduled calls."""
-    try:
-        # Ensure database connection is open (with retry for closed connections)
-        if database.is_closed():
-            database.connect(reuse_if_open=True)
-        
-        # Query all scheduled calls
-        calls = list(ScheduledCall.select())
-        
-        # Convert to list of dictionaries
-        result = [call.to_dict() for call in calls]
-        
-        return jsonify(result), 200
-    except Exception as e:
-        # Try to reconnect if connection error
-        try:
-            if database.is_closed():
-                database.connect(reuse_if_open=True)
-                calls = list(ScheduledCall.select())
-                result = [call.to_dict() for call in calls]
-                return jsonify(result), 200
-        except Exception:
-            pass
-        return jsonify({"error": str(e)}), 500
+    return jsonify([call.to_dict() for call in ScheduledCall.select()]), 200

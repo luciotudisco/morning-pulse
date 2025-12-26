@@ -6,6 +6,7 @@ from peewee import DateTimeField
 from peewee import Model
 from peewee import TextField
 from peewee import TimeField
+from playhouse.shortcuts import model_to_dict
 
 from models.database import database
 
@@ -29,3 +30,7 @@ class ScheduledCall(Model):
         """Update updated_at timestamp on save."""
         self.updated_at = datetime.now(timezone.utc)
         return super().save(*args, **kwargs)
+
+    def to_dict(self):
+        """Convert the model to a dictionary."""
+        return model_to_dict(self)
