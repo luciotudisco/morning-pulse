@@ -21,7 +21,7 @@ class ScheduledCall(Model):
     user_id = TextField(null=False, index=True)
     scheduled_time = TimeField(null=False)
     timezone = TextField(null=False, default="UTC")
-    phone_number = TextField(null=True, max_length=20)
+    phone_number = TextField(null=True)
     created_at = DateTimeField(default=lambda: datetime.now(timezone.utc), null=False)
     updated_at = DateTimeField(default=lambda: datetime.now(timezone.utc), null=False)
 
