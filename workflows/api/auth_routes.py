@@ -15,7 +15,7 @@ def get_auth0():
 def login():
     """Initiate Auth0 login."""
     auth0 = get_auth0()
-    return auth0.authorize_redirect(redirect_uri=url_for("/callback", _external=True))
+    return auth0.authorize_redirect(redirect_uri=url_for("api.callback", _external=True))
 
 
 @bp.route("/callback")
