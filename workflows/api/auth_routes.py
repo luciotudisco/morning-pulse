@@ -40,3 +40,5 @@ def logout():
     return redirect(
         f"https://{domain}/v2/logout?" + "&".join([f"{k}={v}" for k, v in params.items()])
     )
+
+    https://morning-pulse.eu.auth0.com/authorize?redirect_uri=https%3A%2F%2Fmorning-pulse-workflows-20e81fdff6d5.herokuapp.com%2Fcallback&scope=openid+profile+email&state=F8F9pNIwyvgv5hXF3mISrfcaSkEibw&nonce=L4raOvRaWAXQzvxUqlSL

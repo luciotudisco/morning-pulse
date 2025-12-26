@@ -7,3 +7,9 @@ from api import bp
 def health():
     """Health check endpoint."""
     return jsonify({"status": "healthy"}), 200
+
+
+@bp.route("/", methods=["GET"])
+def home():
+    """Home page endpoint."""
+    return "Hello, World!", 200
