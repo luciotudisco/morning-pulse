@@ -4,8 +4,6 @@ from flask import session
 from flask import url_for
 
 from api import bp
-from api.auth import get_user_info
-from api.auth import requires_auth
 
 
 def get_auth0():
@@ -51,13 +49,3 @@ def logout():
     return redirect(
         f"https://{domain}/v2/logout?" + "&".join([f"{k}={v}" for k, v in params.items()])
     )
-
-
-@bp.route("/profile")
-@requires_auth
-def profile():
-    """Get user profile (protected route)."""
-    from flask import jsonify
-
-    return jsonify(get_user_info()), 200
-
