@@ -1,4 +1,5 @@
 from datetime import time
+from typing import List
 
 from models.scheduled_call import ScheduledCallModel
 from schema.scheduled_call import ScheduledCall
@@ -10,17 +11,19 @@ class ScheduledCallDAO:
     @staticmethod
     def create(user_id: str, scheduled_time: time, phone_number: str, timezone: str = "UTC") -> ScheduledCall:
         """Create a new scheduled call."""
-        return ScheduledCallModel.create(
-                user_id=user_id,
-                scheduled_time=scheduled_time,
-                timezone=timezone,
-                phone_number=phone_number,
+        model = ScheduledCallModel.create(
+            user_id=user_id,
+            scheduled_time=scheduled_time,
+            timezone=timezone,
+            phone_number=phone_number,
         )
+        return model.to_schema()
 
     @staticmethod
     def get_by_id(call_id: int) -> ScheduledCall | None:
         """Get a scheduled call by ID."""
-        return ScheduledCallModel.get_by_id(call_id)
+        model = ScheduledCallModel.get_by_id(call_id)
+        return model.to_schema()
 
     @staticmethod
     def get_all() -> List[ScheduledCall]:
@@ -35,7 +38,6 @@ class ScheduledCallDAO:
         return [call.to_schema() for call in calls]
 
     @staticmethod
-    def delete(call_id: int) -> bool:
+    def delete(call_id: int) -> None:
         """Delete a scheduled call."""
-        call = ScheduledCallModel.get_by_id(call_id)
-        call.delete_instance()
+        ScheduledCallModel.delete_by_id(call_id)
