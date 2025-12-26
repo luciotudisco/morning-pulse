@@ -19,4 +19,22 @@ def parse_database_url(url: str) -> dict:
 
 # Create database connection
 db_params = parse_database_url(config.DATABASE_URL)
-database = PostgresqlDatabase(**db_params)
+database = PostgresqlDatabase(**db_params, autocommit=False, autorollback=True)
+
+
+def init_db():
+    """Initialize database connection and create tables."""
+    try:
+        database.connect(reuse_if_open=True)
+    except Exception as e:
+        print(f"Error initializing database: {e}")
+        raise
+    finally:
+        # Don't close here - keep connection open for requests
+        pass
+
+
+def close_db():
+    """Close database connection."""
+    if not database.is_closed():
+        database.close()
