@@ -15,7 +15,7 @@ def get_auth0():
 def login():
     """Initiate Auth0 login."""
     auth0 = get_auth0()
-    return auth0.authorize_redirect(redirect_uri=url_for("api.callback", _external=True))
+    return auth0.authorize_redirect(redirect_uri=url_for("/callback", _external=True))
 
 
 @bp.route("/callback")
@@ -23,16 +23,7 @@ def callback():
     """Handle Auth0 callback."""
     auth0 = get_auth0()
     token = auth0.authorize_access_token()
-    resp = auth0.get("userinfo")
-    userinfo = resp.json()
-
-    session["jwt_payload"] = token
-    session["profile"] = {
-        "user_id": userinfo["sub"],
-        "name": userinfo["name"],
-        "picture": userinfo["picture"],
-        "email": userinfo["email"],
-    }
+    session["user"] = token
     return redirect("/")
 
 
