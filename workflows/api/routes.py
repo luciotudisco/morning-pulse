@@ -20,4 +20,4 @@ def home():
 def get_scheduled_calls():
     """Retrieve all scheduled calls."""
     calls = ScheduledCallDAO.get_all()
-    return jsonify(calls), 200  
+    return jsonify([call.model_dump(mode="json") for call in calls]), 200  
