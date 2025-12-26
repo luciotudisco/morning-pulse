@@ -1,22 +1,11 @@
-import os
-
 from flask import Flask
-from flask import jsonify
+
+from api.routes import bp
+from config.settings import config
 
 app = Flask(__name__)
-
-
-@app.route("/health", methods=["GET"])
-def health():
-    return jsonify({"status": "healthy"}), 200
-
-
-@app.cli.command()
-def test():
-    """Run tests."""
-    print("Running tests...")
+app.register_blueprint(bp)
 
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=config.PORT, debug=True)

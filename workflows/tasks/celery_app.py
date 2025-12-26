@@ -1,9 +1,8 @@
-import os
-
 from celery import Celery
 
-redis_url = os.getenv("REDISCLOUD_URL", "redis://localhost:6379/0")
-app = Celery("morning-pulse-workflows", broker=redis_url, backend=redis_url)
+from config.settings import config
+
+app = Celery("morning-pulse-workflows", broker=config.REDIS_URL, backend=config.REDIS_URL)
 
 # Configuration
 app.conf.update(
@@ -20,7 +19,3 @@ app.conf.update(
     },
 )
 
-
-@app.task(name="tasks.hello_world")
-def hello_world() -> None:
-    print("Hello World!")

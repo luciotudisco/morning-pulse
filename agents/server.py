@@ -1,4 +1,3 @@
-from assistants.agent import Assistant
 from dotenv import load_dotenv
 from livekit import agents
 from livekit.agents import AgentServer
@@ -7,7 +6,10 @@ from livekit.plugins import deepgram
 from livekit.plugins import elevenlabs
 from livekit.plugins import openai
 
-load_dotenv(".env.local")
+from assistants.agent import Assistant
+from config.settings import config
+
+load_dotenv(config.ENV_FILE)
 
 server = AgentServer()
 
