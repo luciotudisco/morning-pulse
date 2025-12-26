@@ -6,5 +6,74 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "celery>=5.4.0",
+    "flask>=3.0.0",
+    "gunicorn>=21.2.0",
+    "psycopg2-binary>=2.9.0",
     "redis>=5.0.0",
+    "sqlalchemy>=2.0.0",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.10",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+    "TCH", # flake8-type-checking
+    "ARG", # flake8-unused-arguments
+    "PIE", # flake8-pie
+    "PT",  # flake8-pytest-style
+    "RET", # flake8-return
+    "RUF", # Ruff-specific rules
+]
+ignore = []
+
+[tool.ruff.lint.isort]
+force-single-line = true
+known-first-party = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

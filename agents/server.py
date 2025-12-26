@@ -1,4 +1,4 @@
-from agents.assistants.agent import Assistant
+from assistants.agent import Assistant
 from dotenv import load_dotenv
 from livekit import agents
 from livekit.agents import AgentServer
@@ -25,7 +25,7 @@ async def morning_pulse_agent(ctx: agents.JobContext):
         preemptive_generation=True,
     )
     await session.start(room=ctx.room, agent=Assistant())
-    await session.say(text="Hello! Do you want to hear a joke?")
+    await session.say(text="Hello. Time to wake")
 
 
 if __name__ == "__main__":
