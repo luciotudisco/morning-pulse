@@ -7,8 +7,11 @@ from config.settings import config
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
 app.config.from_object(config)
+
+# Initialize Auth0
 auth0 = init_auth(app)
 app.extensions["auth0"] = auth0
+
 app.register_blueprint(bp)
 
 
