@@ -1,6 +1,7 @@
 from datetime import datetime
 from datetime import timezone
 
+import json
 from peewee import AutoField
 from peewee import DateTimeField
 from peewee import Model
@@ -31,6 +32,6 @@ class ScheduledCall(Model):
         self.updated_at = datetime.now(timezone.utc)
         return super().save(*args, **kwargs)
 
-    def to_dict(self):
+    def to_json(self):
         """Convert the model to a dictionary."""
-        return model_to_dict(self)
+        return json.dumps(model_to_dict(self), indent=4, sort_keys=True, default=str)
