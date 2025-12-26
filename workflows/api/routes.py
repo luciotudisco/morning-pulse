@@ -7,4 +7,3 @@ from api import bp
 def health():
     """Health check endpoint."""
     return jsonify({"status": "healthy"}), 200
-
