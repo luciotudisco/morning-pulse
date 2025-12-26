@@ -19,4 +19,4 @@ def home():
 @bp.route("/scheduled-calls", methods=["GET"])
 def get_scheduled_calls():
     """Retrieve all scheduled calls."""
-    return jsonify([call.to_dict() for call in ScheduledCall.select()]), 200
+    return jsonify([call.to_json() for call in ScheduledCall.select()]), 200
