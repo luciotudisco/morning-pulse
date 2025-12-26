@@ -15,6 +15,7 @@ class ScheduledCallDAO:
                 scheduled_time=scheduled_time,
                 timezone=timezone,
                 phone_number=phone_number,
+        )
 
     @staticmethod
     def get_by_id(call_id: int) -> ScheduledCall | None:
