@@ -1,19 +1,17 @@
 from datetime import datetime
 from datetime import timezone
 
-import json
 from peewee import AutoField
 from peewee import DateTimeField
 from peewee import Model
 from peewee import TextField
 from peewee import TimeField
-from playhouse.shortcuts import model_to_dict
 
 from models.database import database
 
 
-class ScheduledCall(Model):
-    """Model representing a scheduled wake-up call."""
+class ScheduledCallModel(Model):
+    """Peewee model representing a scheduled call."""
 
     class Meta:
         database = database
@@ -32,6 +30,11 @@ class ScheduledCall(Model):
         self.updated_at = datetime.now(timezone.utc)
         return super().save(*args, **kwargs)
 
-    def to_json(self):
-        """Convert the model to a dictionary."""
-        return json.dumps(model_to_dict(self), indent=4, sort_keys=True, default=str)
+    def to_schema(self):
+        """Convert Peewee model to Pydantic schema."""
+        from schema.scheduled_call import ScheduledCall
+        return ScheduledCall(
+            scheduled_time=self.scheduled_time,
+            timezone=self.timezone,
+            phone_number=self.phone_number,
+        )

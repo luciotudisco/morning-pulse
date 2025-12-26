@@ -1,7 +1,7 @@
 from flask import jsonify
 
 from api import bp
-from models.scheduled_call import ScheduledCall
+from models.scheduled_call_dao import ScheduledCallDAO
 
 
 @bp.route("/health", methods=["GET"])
@@ -19,4 +19,5 @@ def home():
 @bp.route("/scheduled-calls", methods=["GET"])
 def get_scheduled_calls():
     """Retrieve all scheduled calls."""
-    return jsonify([call.to_json() for call in ScheduledCall.select()]), 200
+    calls = ScheduledCallDAO.get_all()
+    return jsonify(calls), 200  

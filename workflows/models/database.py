@@ -5,36 +5,16 @@ from peewee import PostgresqlDatabase
 from config.settings import config
 
 
-def parse_database_url(url: str) -> dict:
+def _parse_database_url(url: str) -> dict:
     """Parse PostgreSQL database URL into connection parameters."""
     parsed = urlparse(url)
-    return {
-        "database": parsed.path.lstrip("/").split("?")[0] or "postgres",
-        "host": parsed.hostname or "localhost",
-        "port": parsed.port or 5432,
-        "user": parsed.username or "postgres",
-        "password": parsed.password,
-    }
+    database_params = {}
+    database_params["database"] = parsed.path.lstrip("/").split("?")[0]
+    database_params["host"] = parsed.hostname
+    database_params["port"] = parsed.port
+    database_params["user"] = parsed.username
+    database_params["password"] = parsed.password
+    return database_params
 
-
-# Create database connection
-db_params = parse_database_url(config.DATABASE_URL)
+db_params = _parse_database_url(config.DATABASE_URL)
 database = PostgresqlDatabase(**db_params, autocommit=False, autorollback=True)
-
-
-def init_db():
-    """Initialize database connection and create tables."""
-    try:
-        database.connect(reuse_if_open=True)
-    except Exception as e:
-        print(f"Error initializing database: {e}")
-        raise
-    finally:
-        # Don't close here - keep connection open for requests
-        pass
-
-
-def close_db():
-    """Close database connection."""
-    if not database.is_closed():
-        database.close()
