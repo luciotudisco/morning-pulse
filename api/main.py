@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 
 from api.auth import init_auth
 from api.routes import bp
@@ -7,6 +8,8 @@ from models.database import database
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
 app.config.from_object(config)
+
+CORS(app, supports_credentials=True, )
 
 # Initialize Auth0
 auth0 = init_auth(app)
