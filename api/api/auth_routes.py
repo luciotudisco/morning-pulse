@@ -24,6 +24,7 @@ def callback():
     auth0 = get_auth0()
     token = auth0.authorize_access_token()
     session["user"] = token
+    print(token)
     return redirect("/")
 
 
