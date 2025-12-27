@@ -21,3 +21,27 @@ def init_auth(app):
     return auth0
 
 
+def requires_auth(f):
+    """Decorator to require authentication for a route."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if "user" not in session:
+            return jsonify({"error": "Authentication required"}), 401
+        return f(*args, **kwargs)
+    return decorated
+
+
+def get_user_id() -> str | None:
+    """Get the current user's ID from the session."""
+    if "user" not in session:
+        return None
+    user_data = session.get("user", {})
+    print(user_data)
+    # Try to get user ID from userinfo first, then from token sub
+    userinfo = user_data.get("userinfo", {})
+    if isinstance(userinfo, dict) and "sub" in userinfo:
+        return userinfo.get("sub")
+    # Fallback to token sub field
+    return user_data.get("sub")
+
+

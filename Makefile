@@ -35,3 +35,6 @@ test: ## Run tests in all subdirectories
 deploy-heroku: ## Deploy workflows subdirectory to Heroku
 	git subtree push --prefix workflows heroku main
 
+deploy-heroku-portal: ## Deploy portal subdirectory to Heroku
+	git subtree push --prefix portal heroku-morning-pulse-portal main || git push heroku-morning-pulse-portal `git subtree split --prefix portal main`:main --force
+

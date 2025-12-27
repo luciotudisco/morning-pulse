@@ -23,7 +23,12 @@ def callback():
     """Handle Auth0 callback."""
     auth0 = get_auth0()
     token = auth0.authorize_access_token()
+    # Store token and user info in session
     session["user"] = token
+    # Fetch user info from Auth0
+    resp = auth0.get("userinfo")
+    user_info = resp.json()
+    session["user"]["userinfo"] = user_info
     return redirect("/")
 
 
