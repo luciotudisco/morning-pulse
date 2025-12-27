@@ -1,20 +1,38 @@
 "use client";
 
-import { useState } from "react";
-import { Clock, Plus, Trash2 } from "lucide-react";
-
-interface ScheduledCall {
-  scheduled_time: string;
-  timezone: string;
-  phone_number: string | null;
-}
+import { useState, useEffect, useTransition } from "react";
+import { Plus, Trash2 } from "lucide-react";
+import { apiClient } from "@/lib/api-client";
+import type { ScheduledCallData } from "@/lib/schemas";
 
 export default function AlarmPage() {
-  const [alarms, setAlarms] = useState<ScheduledCall[]>([]);
+  const [alarms, setAlarms] = useState<ScheduledCallData[]>([]);
   const [time, setTime] = useState("07:00");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [timezone, setTimezone] = useState("UTC");
   const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  // Get browser's default timezone
+  const getBrowserTimezone = () => {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  };
+
+  useEffect(() => {
+    const loadAlarms = async () => {
+      setIsLoading(true);
+      try {
+        const scheduledCalls = await apiClient.listScheduledCalls();
+        setAlarms(scheduledCalls);
+      } catch (error) {
+        console.error("Failed to load alarms:", error);
+        alert("Failed to load alarms. Please refresh the page.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadAlarms();
+  }, []);
 
   const handleAddAlarm = async () => {
     if (!phoneNumber) {
@@ -22,33 +40,21 @@ export default function AlarmPage() {
       return;
     }
 
-    setIsLoading(true);
     try {
-      const response = await fetch("/api/scheduled-calls", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          scheduled_time: `${time}:00`,
-          phone_number: phoneNumber,
-          timezone: timezone,
-        }),
+      const newAlarm = await apiClient.createScheduledCall({
+        scheduled_time: time, // API expects "HH:MM" format
+        phone_number: phoneNumber,
+        timezone: getBrowserTimezone(), 
       });
 
-      if (response.ok) {
-        const newAlarm = await response.json();
-        setAlarms([...alarms, newAlarm]);
+      startTransition(() => {
+        setAlarms((prevAlarms) => [...prevAlarms, newAlarm]);
         setPhoneNumber("");
         setTime("07:00");
-      } else {
-        const error = await response.json();
-        alert(`Error: ${error.error || "Failed to create alarm"}`);
-      }
+      });
     } catch (error) {
-      alert("Failed to create alarm. Please try again.");
-    } finally {
-      setIsLoading(false);
+      const errorMessage = error instanceof Error ? error.message : "Failed to create alarm";
+      alert(`Error: ${errorMessage}`);
     }
   };
 
@@ -98,33 +104,13 @@ export default function AlarmPage() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
-              Timezone
-            </label>
-            <select
-              value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-900 text-black dark:text-white focus:outline-none focus:border-gray-500 dark:focus:border-gray-500"
-            >
-              <option value="UTC">UTC</option>
-              <option value="America/New_York">Eastern Time</option>
-              <option value="America/Chicago">Central Time</option>
-              <option value="America/Denver">Mountain Time</option>
-              <option value="America/Los_Angeles">Pacific Time</option>
-              <option value="Europe/London">London</option>
-              <option value="Europe/Paris">Paris</option>
-              <option value="Asia/Tokyo">Tokyo</option>
-            </select>
-          </div>
-
           <button
             onClick={handleAddAlarm}
-            disabled={isLoading}
+            disabled={isPending}
             className="w-full py-2 px-4 bg-black dark:bg-white text-white dark:text-black rounded hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50 flex items-center justify-center gap-2"
           >
             <Plus className="w-4 h-4" />
-            {isLoading ? "Setting..." : "Set Alarm"}
+            {isPending ? "Setting..." : "Set Alarm"}
           </button>
         </div>
 
