@@ -1,9 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import type { ScheduledCallData, CreateScheduledCallRequest } from "@/lib/schemas";
 
-/**
- * API Client class for interacting with the scheduled calls API
- */
 export class ScheduledCall {
   private axiosInstance: AxiosInstance;
 
