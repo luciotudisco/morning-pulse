@@ -3,6 +3,7 @@
 import { useState, useEffect, useTransition } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
+import { redirectToLogin } from "@/lib/auth";
 import type { ScheduledCallData } from "@/lib/schemas";
 
 export default function AlarmPage() {
@@ -12,10 +13,6 @@ export default function AlarmPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // Get browser's default timezone
-  const getBrowserTimezone = () => {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone;
-  };
 
   useEffect(() => {
     const loadAlarms = async () => {
@@ -23,8 +20,13 @@ export default function AlarmPage() {
       try {
         const scheduledCalls = await apiClient.listScheduledCalls();
         setAlarms(scheduledCalls);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Failed to load alarms:", error);
+        // If unauthorized, redirect to login
+        if (error?.response?.status === 401 || error?.message?.includes("401")) {
+          redirectToLogin();
+          return;
+        }
         alert("Failed to load alarms. Please refresh the page.");
       } finally {
         setIsLoading(false);
@@ -44,7 +46,7 @@ export default function AlarmPage() {
       const newAlarm = await apiClient.createScheduledCall({
         scheduled_time: time, // API expects "HH:MM" format
         phone_number: phoneNumber,
-        timezone: getBrowserTimezone(), 
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
 
       startTransition(() => {
@@ -52,7 +54,12 @@ export default function AlarmPage() {
         setPhoneNumber("");
         setTime("07:00");
       });
-    } catch (error) {
+    } catch (error: any) {
+      // If unauthorized, redirect to login
+      if (error?.response?.status === 401 || error?.message?.includes("401")) {
+        redirectToLogin();
+        return;
+      }
       const errorMessage = error instanceof Error ? error.message : "Failed to create alarm";
       alert(`Error: ${errorMessage}`);
     }

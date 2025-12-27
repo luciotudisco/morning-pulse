@@ -1,13 +1,27 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosError } from "axios";
 import type { ScheduledCallData, CreateScheduledCallRequest } from "@/lib/schemas";
 
 export class ScheduledCall {
   private axiosInstance: AxiosInstance;
+  private HTTP_STATUS_UNAUTHORIZED = 401;
 
   constructor() {
     const baseURL = process.env.NEXT_PUBLIC_API_URL
     const headers = { 'Content-Type': 'application/json' }
     this.axiosInstance = axios.create({ baseURL, withCredentials: true, headers })
+    
+    // Add response interceptor to handle 401 errors
+    this.axiosInstance.interceptors.response.use(
+      (response) => response,
+      (error: AxiosError) => {
+        if (error.response?.status === this.HTTP_STATUS_UNAUTHORIZED) {
+          if (typeof window !== "undefined") {
+            window.location.href = "/login";
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
   }
 
   async listScheduledCalls(): Promise<ScheduledCallData[]> {
