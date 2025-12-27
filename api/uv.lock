@@ -310,6 +310,19 @@ wheels = [
 ]
 
 [[package]]
+name = "flask-pydantic"
+version = "0.14.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "flask" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/03/8b/05c91742c72740fb98e18bc4b0a7645e5df4c0ef9fec868e7343aaea0504/flask_pydantic-0.14.0.tar.gz", hash = "sha256:eb27fa6fd62d952b421df05c72349b5b1dc6fadacbd52879aac80cc519e4eab6", size = 12177, upload-time = "2025-12-22T02:58:52.575Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/77/60/cab2b0005e076875d869f74dd452cfd81b82a926c52bfff49c401bba0880/flask_pydantic-0.14.0-py3-none-any.whl", hash = "sha256:82a5914d90983f21976c39f97ea2901eba54536ac4b24850e9d52a0676448301", size = 10909, upload-time = "2025-12-22T02:58:51.211Z" },
+]
+
+[[package]]
 name = "gunicorn"
 version = "23.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -721,6 +734,7 @@ dependencies = [
     { name = "authlib" },
     { name = "celery" },
     { name = "flask" },
+    { name = "flask-pydantic" },
     { name = "gunicorn" },
     { name = "peewee" },
     { name = "psycopg2-binary" },
@@ -740,6 +754,7 @@ requires-dist = [
     { name = "authlib", specifier = ">=1.3.0" },
     { name = "celery", specifier = ">=5.4.0" },
     { name = "flask", specifier = ">=3.0.0" },
+    { name = "flask-pydantic", specifier = ">=0.7.0" },
     { name = "gunicorn", specifier = ">=21.2.0" },
     { name = "peewee", specifier = ">=3.17.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.0" },
