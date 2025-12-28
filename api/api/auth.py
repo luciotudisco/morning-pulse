@@ -1,9 +1,7 @@
 from functools import wraps
 
 from flask import jsonify
-from flask import redirect
 from flask import session
-from flask import url_for
 
 from authlib.integrations.flask_client import OAuth
 
@@ -36,7 +34,6 @@ def get_user_id() -> str | None:
     if "user" not in session:
         return None
     user_data = session.get("user", {})
-    print(user_data)
     # Try to get user ID from userinfo first, then from token sub
     userinfo = user_data.get("userinfo", {})
     if isinstance(userinfo, dict) and "sub" in userinfo:
