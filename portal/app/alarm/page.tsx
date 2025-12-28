@@ -3,7 +3,6 @@
 import { useState, useEffect, useTransition } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
-import { redirectToLogin } from "@/lib/auth";
 import type { ScheduledCallData } from "@/lib/schemas";
 
 export default function AlarmPage() {
@@ -24,7 +23,7 @@ export default function AlarmPage() {
         console.error("Failed to load alarms:", error);
         // If unauthorized, redirect to login
         if (error?.response?.status === 401 || error?.message?.includes("401")) {
-          redirectToLogin();
+          window.location.href = "/login";
           return;
         }
         alert("Failed to load alarms. Please refresh the page.");
@@ -55,9 +54,8 @@ export default function AlarmPage() {
         setTime("07:00");
       });
     } catch (error: any) {
-      // If unauthorized, redirect to login
       if (error?.response?.status === 401 || error?.message?.includes("401")) {
-        redirectToLogin();
+        window.location.href = "/login";
         return;
       }
       const errorMessage = error instanceof Error ? error.message : "Failed to create alarm";

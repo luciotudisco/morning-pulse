@@ -14,12 +14,3 @@ export async function checkAuth(): Promise<boolean> {
   }
 }
 
-/**
- * Redirect to login page
- */
-export function redirectToLogin() {
-  if (typeof window !== "undefined") {
-    window.location.href = "/login";
-  }
-}
-

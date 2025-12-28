@@ -1,11 +1,11 @@
 from functools import wraps
 
 from flask import jsonify
-from flask import redirect
 from flask import session
-from flask import url_for
+from typing import Optional
 
 from authlib.integrations.flask_client import OAuth
+from schema.user import User
 
 
 def init_auth(app):
@@ -31,17 +31,17 @@ def requires_auth(f):
     return decorated
 
 
-def get_user_id() -> str | None:
-    """Get the current user's ID from the session."""
+def get_user_info() -> Optional[User]:
+    """Get the current user's information from the session."""
     if "user" not in session:
         return None
     user_data = session.get("user", {})
-    print(user_data)
-    # Try to get user ID from userinfo first, then from token sub
     userinfo = user_data.get("userinfo", {})
-    if isinstance(userinfo, dict) and "sub" in userinfo:
-        return userinfo.get("sub")
-    # Fallback to token sub field
-    return user_data.get("sub")
+    return User(
+        user_id=userinfo.get('sub'),
+        email=userinfo.get("email"),
+        name=userinfo.get("name"),
+        picture=userinfo.get("picture"),
+    )
 
 
