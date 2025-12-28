@@ -35,7 +35,7 @@ export function UserAvatar({ user, onLogout }: AvatarProps) {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        {user.name && <DropdownMenuLabel>{user.name}</DropdownMenuLabel>}
+        <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
           <DropdownMenuLabel className="font-normal text-muted-foreground">
             {user.email}
           </DropdownMenuLabel>
