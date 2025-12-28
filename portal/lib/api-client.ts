@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosError } from "axios";
-import type { ScheduledCallData, CreateScheduledCallRequest } from "@/lib/schemas";
+import type { ScheduledCallData, CreateScheduledCallRequest, User } from "@/lib/schemas";
 
 export class ScheduledCall {
   private axiosInstance: AxiosInstance;
@@ -31,6 +31,11 @@ export class ScheduledCall {
 
   async createScheduledCall(request: CreateScheduledCallRequest): Promise<ScheduledCallData> {
     const response = await this.axiosInstance.post<ScheduledCallData>("/scheduled_calls", request);
+    return response.data;
+  }
+
+  async getCurrentUser(): Promise<User> {
+    const response = await this.axiosInstance.get<User>("/auth/me");
     return response.data;
   }
 }

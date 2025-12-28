@@ -41,6 +41,8 @@ def get_user_info() -> Optional[User]:
         user_id=userinfo.get('sub'),
         email=userinfo.get("email"),
         name=userinfo.get("name"),
+        given_name=userinfo.get("given_name"),
+        family_name=userinfo.get("family_name"),
         picture=userinfo.get("picture"),
     )
 
