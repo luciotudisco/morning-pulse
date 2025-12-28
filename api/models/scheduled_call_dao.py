@@ -38,6 +38,18 @@ class ScheduledCallDAO:
         return [call.to_schema() for call in calls]
 
     @staticmethod
+    def get_by_id_and_user_id(call_id: int, user_id: str) -> ScheduledCall | None:
+        """Get a scheduled call by ID and user ID."""
+        try:
+            model = ScheduledCallModel.get(
+                ScheduledCallModel.id == call_id,
+                ScheduledCallModel.user_id == user_id
+            )
+            return model.to_schema()
+        except ScheduledCallModel.DoesNotExist:
+            return None
+
+    @staticmethod
     def delete(call_id: int) -> None:
         """Delete a scheduled call."""
         ScheduledCallModel.delete_by_id(call_id)

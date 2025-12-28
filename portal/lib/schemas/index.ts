@@ -3,6 +3,7 @@
  */
 
 export interface ScheduledCallData {
+  id: number;
   scheduled_time: string; // Format: "HH:MM:SS"
   timezone: string;
   phone_number: string | null;

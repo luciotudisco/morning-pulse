@@ -49,4 +49,16 @@ def create_scheduled_call(body: CreateScheduledCallRequest):
         phone_number=body.phone_number,
         timezone=body.timezone,
     )
-    return jsonify(call.model_dump(mode="json")), 201  
+    return jsonify(call.model_dump(mode="json")), 201
+
+
+@bp.route("/scheduled_calls/<int:call_id>", methods=["DELETE"])
+@requires_auth
+def delete_scheduled_call(call_id: int):
+    """Delete a scheduled call for the current logged-in user."""
+    user_id = get_user_info().user_id
+    call = ScheduledCallDAO.get_by_id_and_user_id(call_id, user_id)
+    if not call:
+        return jsonify({"error": "Scheduled call not found"}), 404
+    ScheduledCallDAO.delete(call_id)
+    return jsonify({"message": "Scheduled call deleted successfully"}), 200  

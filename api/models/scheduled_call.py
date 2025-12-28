@@ -34,6 +34,7 @@ class ScheduledCallModel(Model):
         """Convert Peewee model to Pydantic schema."""
         from schema.scheduled_call import ScheduledCall
         return ScheduledCall(
+            id=self.id,
             scheduled_time=self.scheduled_time,
             timezone=self.timezone,
             phone_number=self.phone_number,

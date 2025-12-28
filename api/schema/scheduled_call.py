@@ -10,6 +10,7 @@ from pydantic import field_validator
 class ScheduledCall(BaseModel):
     """Pydantic model for a scheduled call."""
 
+    id: int = Field(description="Scheduled call ID")
     scheduled_time: time = Field(description="Scheduled wake-up time")
     timezone: str = Field(default="UTC", description="Timezone for the scheduled time")
     phone_number: str | None = Field(default=None, description="Phone number for the call")

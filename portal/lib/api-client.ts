@@ -34,6 +34,10 @@ export class ScheduledCall {
     return response.data;
   }
 
+  async deleteScheduledCall(callId: number): Promise<void> {
+    await this.axiosInstance.delete(`/scheduled_calls/${callId}`);
+  }
+
   async getCurrentUser(): Promise<User> {
     const response = await this.axiosInstance.get<User>("/auth/me");
     return response.data;

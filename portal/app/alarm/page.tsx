@@ -63,9 +63,15 @@ export default function AlarmPage() {
     }
   };
 
-  const handleDeleteAlarm = async (index: number) => {
-    const updatedAlarms = alarms.filter((_, i) => i !== index);
-    setAlarms(updatedAlarms);
+  const handleDeleteAlarm = async (callId: number) => {
+    try {
+      await apiClient.deleteScheduledCall(callId);
+      startTransition(() => {
+        setAlarms((prevAlarms) => prevAlarms.filter((alarm) => alarm.id !== callId));
+      });
+    } catch (error: any) {
+      console.error("Failed to delete alarm:", error);
+    }
   };
 
   const formatTime = (timeString: string) => {
@@ -129,9 +135,9 @@ export default function AlarmPage() {
             </p>
           ) : (
             <div className="space-y-2">
-              {alarms.map((alarm, index) => (
+              {alarms.map((alarm) => (
                 <div
-                  key={index}
+                  key={alarm.id}
                   className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-800 rounded"
                 >
                   <div>
@@ -143,8 +149,9 @@ export default function AlarmPage() {
                     </div>
                   </div>
                   <button
-                    onClick={() => handleDeleteAlarm(index)}
+                    onClick={() => handleDeleteAlarm(alarm.id)}
                     className="p-1 text-gray-400 hover:text-red-500"
+                    aria-label="Delete alarm"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
