@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 
 export default function Home() {
   return (
@@ -9,7 +12,7 @@ export default function Home() {
             A wake-up call that actually works
           </p>
           <h1 className="mt-4 text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-            Wake up, on purpose.
+            <AnimatedShinyText>Wake up, on purpose.</AnimatedShinyText>
           </h1>
           <p className="mt-4 text-pretty text-muted-foreground sm:text-lg">
             Schedule a quick nudge call that gets you moving—simple, friendly,
