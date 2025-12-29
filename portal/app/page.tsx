@@ -6,7 +6,7 @@ import { RainbowButton } from "@/components/ui/rainbow-button";
 
 export default function Home() {
   return (
-      <main className="container mx-auto p-4 md:p-16 text-center">
+      <main className="container mx-auto px-4 md:px-16 py-8 md:py-16 text-center">
         <div className="mx-auto w-full md:max-w-2xl">
             <AnimatedShinyText>
               Your personal accountability partner
