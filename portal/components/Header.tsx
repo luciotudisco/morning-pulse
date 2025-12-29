@@ -1,34 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { apiClient } from "@/lib/api-client";
+import { useAuth } from "@/contexts/AuthContext";
 import { UserAvatar } from "@/components/Avatar";
-import type { User } from "@/lib/schemas";
 
 export function Header() {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const currentUser = await apiClient.getCurrentUser();
-        setUser(currentUser);
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  const handleLogout = () => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
-    window.location.href = `${apiUrl}/logout`;
-  };
+  const { user, isLoading, logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -40,7 +17,7 @@ export function Header() {
           {isLoading ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
           ) : user ? (
-            <UserAvatar user={user} onLogout={handleLogout} />
+            <UserAvatar user={user} onLogout={logout} />
           ) : (
             <Link
               href="/login"

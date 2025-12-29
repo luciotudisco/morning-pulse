@@ -2,13 +2,20 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function CallbackPage() {
   const router = useRouter();
+  const { refreshUser } = useAuth();
 
   useEffect(() => {
-    router.push("/alarm");
-  }, [router]);
+    // After successful login, refresh user data and redirect
+    const handleCallback = async () => {
+      await refreshUser();
+      router.push("/alarm");
+    };
+    handleCallback();
+  }, [router, refreshUser]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-8">
