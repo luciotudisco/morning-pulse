@@ -8,9 +8,10 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="container mx-auto px-4 md:px-8 py-12 md:py-20">
-        <div className="mx-auto w-full max-w-3xl">
-          <div className="bg-card rounded-2xl shadow-lg p-8 md:p-12 text-center bg-white">
+      <section className="w-full bg-white border-b shadow-sm">
+        <div className="container mx-auto px-4 md:px-8 py-12 md:py-20">
+          <div className="mx-auto w-full max-w-3xl">
+            <div className="bg-card rounded-2xl shadow-lg p-8 md:p-12 text-center">
             <p className="text-sm text-muted-foreground mb-4">
               We call you at the time you choose—until you're up / moving / started.
             </p>
@@ -27,6 +28,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </div>
       </section>
 
       {/* How it works Section */}
