@@ -26,7 +26,7 @@ export default function AlarmPage() {
           window.location.href = "/login";
           return;
         }
-        alert("Failed to load alarms. Please refresh the page.");
+        alert("Failed to load nudges. Please refresh the page.");
       } finally {
         setIsLoading(false);
       }
@@ -58,7 +58,7 @@ export default function AlarmPage() {
         window.location.href = "/login";
         return;
       }
-      const errorMessage = error instanceof Error ? error.message : "Failed to create alarm";
+      const errorMessage = error instanceof Error ? error.message : "Failed to create nudge";
       alert(`Error: ${errorMessage}`);
     }
   };
@@ -86,7 +86,7 @@ export default function AlarmPage() {
     <div className="min-h-screen bg-white dark:bg-black p-8">
       <div className="max-w-md mx-auto">
         <h1 className="text-2xl font-semibold mb-8 text-black dark:text-white">
-          Set Alarm
+          Schedule Nudge
         </h1>
 
         <div className="space-y-4 mb-8">
@@ -121,17 +121,17 @@ export default function AlarmPage() {
             className="w-full py-2 px-4 bg-black dark:bg-white text-white dark:text-black rounded hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50 flex items-center justify-center gap-2"
           >
             <Plus className="w-4 h-4" />
-            {isPending ? "Setting..." : "Set Alarm"}
+            {isPending ? "Setting..." : "Schedule Nudge"}
           </button>
         </div>
 
         <div>
           <h2 className="text-lg font-medium mb-4 text-black dark:text-white">
-            Alarms
+            Scheduled Nudges
           </h2>
           {alarms.length === 0 ? (
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-              No alarms set
+              No nudges scheduled
             </p>
           ) : (
             <div className="space-y-2">
@@ -151,7 +151,7 @@ export default function AlarmPage() {
                   <button
                     onClick={() => handleDeleteAlarm(alarm.id)}
                     className="p-1 text-gray-400 hover:text-red-500"
-                    aria-label="Delete alarm"
+                    aria-label="Delete nudge"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

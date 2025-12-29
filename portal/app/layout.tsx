@@ -7,7 +7,7 @@ import { LightRays } from "@/components/ui/light-rays";
 
 export const metadata: Metadata = {
   title: "NUDGE CALLS",
-  description: "Nudge calls that actually get you out of bed.",
+  description: "AI-powered nudge calls to help you achieve your goals.",
 };
 
 export default function RootLayout({
