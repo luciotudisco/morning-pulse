@@ -11,14 +11,14 @@ export default function Home() {
         <div className="relative mx-auto max-w-2xl overflow-hidden p-8 sm:p-12">
           <div className="relative z-10 text-center">
             <AnimatedShinyText>
-              A wake-up call that actually works
+              Your personal AI accountability partner
             </AnimatedShinyText>
             <h1 className="mt-4 text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-              Wake up, on purpose.
+              Get the push you need.
             </h1>
             <p className="mt-4 text-pretty text-muted-foreground sm:text-lg">
-              Schedule a quick nudge call that gets you moving—simple, friendly,
-              and hard to ignore.
+              Schedule a nudge call from an AI agent to help you wake up, hit the gym,
+              or get started on your goals. Friendly, persistent, and effective.
             </p>
           </div>
         </div>
@@ -26,7 +26,7 @@ export default function Home() {
         <section className="mx-auto mt-10 max-w-3xl">
           <div className="flex flex-col items-center gap-3 sm:items-center">
             <RainbowButton asChild size="lg">
-              <Link href="/alarm">Set my alarm</Link>
+              <Link href="/alarm">Schedule a Nudge</Link>
             </RainbowButton>
           </div>
         </section>
