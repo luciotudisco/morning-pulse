@@ -25,10 +25,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const loadUserFromStorage = () => {
       try {
         const storedUser = localStorage.getItem(USER_STORAGE_KEY);
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser);
-          setUser(parsedUser);
+        if (!storedUser) {
+          return;
         }
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
       } catch (error) {
         localStorage.removeItem(USER_STORAGE_KEY);
       }

@@ -8,18 +8,6 @@ from models.scheduled_call_dao import ScheduledCallDAO
 from schema.scheduled_call import CreateScheduledCallRequest
 
 
-@bp.route("/health", methods=["GET"])
-def health():
-    """Health check endpoint."""
-    return jsonify({"status": "healthy"}), 200
-
-
-@bp.route("/", methods=["GET"])
-def home():
-    """Home page endpoint."""
-    return "Hello, World!", 200
-
-
 @bp.route("/auth/me", methods=["GET"])
 @requires_auth
 def me():
