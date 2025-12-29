@@ -8,11 +8,11 @@ export default function Home() {
     <div className="bg-background">
       <main className="container mx-auto px-4 py-16 sm:py-24">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-medium text-muted-foreground">
+        <AnimatedShinyText>
             A wake-up call that actually works
-          </p>
+          </AnimatedShinyText>
           <h1 className="mt-4 text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-            <AnimatedShinyText>Wake up, on purpose.</AnimatedShinyText>
+            Wake up, on purpose.
           </h1>
           <p className="mt-4 text-pretty text-muted-foreground sm:text-lg">
             Schedule a quick nudge call that gets you moving—simple, friendly,
