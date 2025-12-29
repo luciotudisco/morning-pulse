@@ -22,7 +22,7 @@ def should_call_run(call: ScheduledCallModel) -> bool:
     if time_since_prev >= EXECUTION_WINDOW_SECONDS:
         return False
 
-    return call.last_run_at is None or call.last_run_at < prev_time
+    return call.last_executed_at is None or call.last_executed_at < prev_time
 
 
 def process_scheduled_call(call: ScheduledCallModel) -> dict | None:
