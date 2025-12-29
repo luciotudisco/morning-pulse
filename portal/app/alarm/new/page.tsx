@@ -3,20 +3,28 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, ArrowLeft } from "lucide-react";
-import { format, addDays, startOfWeek } from "date-fns";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { apiClient } from "@/lib/api-client";
 
-// Generate days of week using date-fns (Monday-Sunday order: 1,2,3,4,5,6,0)
-const DAYS_OF_WEEK = Array.from({ length: 7 }, (_, i) => {
-  const date = addDays(startOfWeek(new Date(2024, 0, 1), { weekStartsOn: 1 }), i);
-  return {
-    value: date.getDay(), // 0 = Sunday, 1 = Monday, etc.
-    short: format(date, "EEE"), // "Mon", "Tue", etc.
-  };
-});
+// Day name map: day value -> { short, long }
+const DAY_NAMES: Record<number, { short: string; long: string }> = {
+  0: { short: "Sun", long: "Sunday" },
+  1: { short: "Mon", long: "Monday" },
+  2: { short: "Tue", long: "Tuesday" },
+  3: { short: "Wed", long: "Wednesday" },
+  4: { short: "Thu", long: "Thursday" },
+  5: { short: "Fri", long: "Friday" },
+  6: { short: "Sat", long: "Saturday" },
+};
+
+// Generate days of week (Monday-Sunday order: 1,2,3,4,5,6,0)
+const DAYS_OF_WEEK = [1, 2, 3, 4, 5, 6, 0].map((dayValue) => ({
+  value: dayValue, // 0 = Sunday, 1 = Monday, etc.
+  short: DAY_NAMES[dayValue].short, // "Mon", "Tue", etc.
+  long: DAY_NAMES[dayValue].long, // "Monday", "Tuesday", etc.
+}));
 
 export default function NewAlarmPage() {
   const router = useRouter();
@@ -24,10 +32,6 @@ export default function NewAlarmPage() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedDays, setSelectedDays] = useState<number[]>([1, 2, 3, 4, 5]);
   const [isPending, startTransition] = useTransition();
-
-  const handleAuthError = () => {
-    //window.location.href = "/login";
-  };
 
   const timeToSchedulePattern = (timeString: string, days: number[]): string => {
     const [hours, minutes] = timeString.split(":");
@@ -74,19 +78,9 @@ export default function NewAlarmPage() {
       });
 
       toast.success("Nudge created successfully!");
-      // Redirect to the list page after successful creation
       router.push("/alarm");
     } catch (error: unknown) {
-      if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as { response?: { status?: number } };
-        if (axiosError.response?.status === 401) {
-          handleAuthError();
-          return;
-        }
-      }
-      toast.error(
-        error instanceof Error ? error.message : "Failed to create nudge"
-      );
+        toast.error("Oops! Something went wrong. Please try again.");
     }
   };
 
@@ -103,7 +97,7 @@ export default function NewAlarmPage() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h1 className="text-2xl font-semibold text-black dark:text-white">
-            Create New Nudge
+            New Nudge
           </h1>
         </div>
 
