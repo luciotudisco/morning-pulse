@@ -4,13 +4,13 @@
 
 export interface ScheduledCallData {
   id: number;
-  scheduled_time: string; // Format: "HH:MM:SS"
+  schedule_pattern: string; // Schedule pattern (cron expression, e.g., "0 7 * * *" for 7 AM daily)
   timezone: string;
   phone_number: string | null;
 }
 
 export interface CreateScheduledCallRequest {
-  scheduled_time: string; // Format: "HH:MM"
+  schedule_pattern: string; // Schedule pattern (cron expression with 5 fields: minute hour day month weekday)
   phone_number: string;
   timezone?: string; // Default: "UTC"
 }

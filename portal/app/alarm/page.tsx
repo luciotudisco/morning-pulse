@@ -35,6 +35,23 @@ export default function AlarmPage() {
     loadAlarms();
   }, []);
 
+  const timeToSchedulePattern = (timeString: string): string => {
+    // Convert "HH:MM" format to schedule pattern "minute hour * * *" (daily)
+    const [hours, minutes] = timeString.split(":");
+    return `${minutes} ${hours} * * *`;
+  };
+
+  const schedulePatternToTime = (schedulePattern: string): string => {
+    // Extract hour and minute from schedule pattern "minute hour * * *"
+    const parts = schedulePattern.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      const minute = parts[0].padStart(2, "0");
+      const hour = parts[1].padStart(2, "0");
+      return `${hour}:${minute}`;
+    }
+    return "00:00";
+  };
+
   const handleAddAlarm = async () => {
     if (!phoneNumber) {
       alert("Please enter a phone number");
@@ -42,8 +59,9 @@ export default function AlarmPage() {
     }
 
     try {
+      const schedulePattern = timeToSchedulePattern(time);
       const newAlarm = await apiClient.createScheduledCall({
-        scheduled_time: time, // API expects "HH:MM" format
+        schedule_pattern: schedulePattern,
         phone_number: phoneNumber,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
@@ -74,7 +92,9 @@ export default function AlarmPage() {
     }
   };
 
-  const formatTime = (timeString: string) => {
+  const formatSchedulePattern = (schedulePattern: string) => {
+    // Parse schedule pattern and display as time
+    const timeString = schedulePatternToTime(schedulePattern);
     const [hours, minutes] = timeString.split(":");
     const hour = parseInt(hours);
     const ampm = hour >= 12 ? "PM" : "AM";
@@ -142,10 +162,13 @@ export default function AlarmPage() {
                 >
                   <div>
                     <div className="font-medium text-black dark:text-white">
-                      {formatTime(alarm.scheduled_time)}
+                      {formatSchedulePattern(alarm.schedule_pattern)}
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
                       {alarm.phone_number || "No phone"} • {alarm.timezone}
+                    </div>
+                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                      {alarm.schedule_pattern}
                     </div>
                   </div>
                   <button

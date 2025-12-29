@@ -20,16 +20,11 @@ export default function Home() {
               Schedule a nudge call from an AI agent to help you wake up, hit the gym,
               or get started on your goals. Friendly, persistent, and effective.
             </p>
-          </div>
-        </div>
-
-        <section className="mx-auto mt-10 max-w-3xl">
-          <div className="flex flex-col items-center gap-3 sm:items-center">
-            <RainbowButton asChild size="lg">
+            <RainbowButton size="lg" className="mt-6">
               <Link href="/alarm">Schedule a Nudge</Link>
             </RainbowButton>
           </div>
-        </section>
+        </div>
       </main>
 
     </div>
