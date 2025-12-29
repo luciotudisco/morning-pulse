@@ -10,7 +10,7 @@ export function Header() {
   const { user, isLoading, logout, login } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 w-full h-16 justify-between items-center px-4 flex">
+    <header className="sticky top-0 z-50 w-full h-16 justify-between items-center px-4 flex bg-white border-b shadow-sm">
         <Link href="/" className="flex items-center space-x-2 group">
           <h1 className="text-xl font-semibold font-mono">
             NUDGE CALLS
