@@ -1,4 +1,4 @@
-from tasks.celery_app import app  # noqa: F401
+from tasks.celery_app import app
 
 
 @app.task(name="tasks.hello_world")

@@ -1,24 +1,22 @@
 from functools import wraps
 
+from authlib.integrations.flask_client import OAuth
 from flask import jsonify
 from flask import session
-from typing import Optional
 
-from authlib.integrations.flask_client import OAuth
 from schema.user import User
 
 
 def init_auth(app):
     """Initialize Auth0 OAuth."""
     oauth = OAuth(app)
-    auth0 = oauth.register(
+    return oauth.register(
         "auth0",
         client_id=app.config["AUTH0_CLIENT_ID"],
         client_secret=app.config["AUTH0_CLIENT_SECRET"],
         client_kwargs={"scope": "openid profile email"},
         server_metadata_url=f'https://{app.config["AUTH0_DOMAIN"]}/.well-known/openid-configuration',
     )
-    return auth0
 
 
 def requires_auth(f):
@@ -31,7 +29,7 @@ def requires_auth(f):
     return decorated
 
 
-def get_user_info() -> Optional[User]:
+def get_user_info() -> User | None:
     """Get the current user's information from the session."""
     if "user" not in session:
         return None

@@ -1,11 +1,10 @@
+from datetime import UTC
 from datetime import datetime
-from datetime import timezone
 
 from peewee import AutoField
 from peewee import DateTimeField
 from peewee import Model
 from peewee import TextField
-from peewee import TimeField
 
 from models.database import database
 
@@ -19,15 +18,15 @@ class ScheduledCallModel(Model):
 
     id = AutoField(primary_key=True)
     user_id = TextField(null=False, index=True)
-    scheduled_time = TimeField(null=False)
+    schedule_pattern = TextField(null=False)
     timezone = TextField(null=False, default="UTC")
     phone_number = TextField(null=True)
-    created_at = DateTimeField(default=lambda: datetime.now(timezone.utc), null=False)
-    updated_at = DateTimeField(default=lambda: datetime.now(timezone.utc), null=False)
+    created_at = DateTimeField(default=lambda: datetime.now(UTC), null=False)
+    updated_at = DateTimeField(default=lambda: datetime.now(UTC), null=False)
 
     def save(self, *args, **kwargs):
         """Update updated_at timestamp on save."""
-        self.updated_at = datetime.now(timezone.utc)
+        self.updated_at = datetime.now(UTC)
         return super().save(*args, **kwargs)
 
     def to_schema(self):
@@ -35,7 +34,7 @@ class ScheduledCallModel(Model):
         from schema.scheduled_call import ScheduledCall
         return ScheduledCall(
             id=self.id,
-            scheduled_time=self.scheduled_time,
+            schedule_pattern=self.schedule_pattern,
             timezone=self.timezone,
             phone_number=self.phone_number,
         )

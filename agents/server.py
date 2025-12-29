@@ -1,11 +1,11 @@
-from assistants.agent import Assistant
-from dotenv import load_dotenv
 from livekit import agents
 from livekit.agents import AgentServer
 from livekit.agents import AgentSession
 from livekit.plugins import deepgram
 from livekit.plugins import elevenlabs
 from livekit.plugins import openai
+
+from assistants.agent import Assistant
 
 server = AgentServer()
 

@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask
 from flask_cors import CORS
 
@@ -5,6 +7,10 @@ from api.auth import init_auth
 from api.routes import bp
 from config.settings import config
 from models.database import database
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
 app.config.from_object(config)
@@ -26,7 +32,7 @@ def before_request():
 
 
 @app.teardown_request
-def teardown_request(exception: Exception | None):
+def teardown_request():
     if not database.is_closed():
         database.close()
 

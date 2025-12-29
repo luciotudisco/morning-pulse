@@ -1,12 +1,11 @@
 from flask import jsonify
+from flask_pydantic import validate
 
 from api import bp
 from api.auth import get_user_info
 from api.auth import requires_auth
-from flask_pydantic import validate
 from models.scheduled_call_dao import ScheduledCallDAO
 from schema.scheduled_call import CreateScheduledCallRequest
-
 
 
 @bp.route("/health", methods=["GET"])
@@ -45,7 +44,7 @@ def create_scheduled_call(body: CreateScheduledCallRequest):
     """Create a new scheduled call for the current logged-in user."""
     call = ScheduledCallDAO.create(
         user_id=get_user_info().user_id,
-        scheduled_time=body.scheduled_time,
+        schedule_pattern=body.schedule_pattern,
         phone_number=body.phone_number,
         timezone=body.timezone,
     )
@@ -61,4 +60,4 @@ def delete_scheduled_call(call_id: int):
     if not call:
         return jsonify({"error": "Scheduled call not found"}), 404
     ScheduledCallDAO.delete(call_id)
-    return jsonify({"message": "Scheduled call deleted successfully"}), 200  
+    return jsonify({"message": "Scheduled call deleted successfully"}), 200

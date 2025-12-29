@@ -1,17 +1,13 @@
-from ast import pattern
-import re
-from datetime import time
 
 from pydantic import BaseModel
 from pydantic import Field
-from pydantic import field_validator
 
 
 class ScheduledCall(BaseModel):
     """Pydantic model for a scheduled call."""
 
     id: int = Field(description="Scheduled call ID")
-    scheduled_time: time = Field(description="Scheduled wake-up time")
+    schedule_pattern: str = Field(description="Schedule pattern (cron expression, e.g., '0 7 * * *' for 7 AM daily)")
     timezone: str = Field(default="UTC", description="Timezone for the scheduled time")
     phone_number: str | None = Field(default=None, description="Phone number for the call")
 
@@ -19,6 +15,8 @@ class ScheduledCall(BaseModel):
 class CreateScheduledCallRequest(BaseModel):
     """Pydantic model for creating a scheduled call request."""
 
-    scheduled_time: str = Field(pattern=r"^([01]?[0-9]|2[0-3]):([0-5][0-9])$")
+    schedule_pattern: str = Field(
+        description="Schedule pattern (cron expression)"
+    )
     phone_number: str = Field(pattern=r"^[\+]?[1-9]\d{1,14}$")
     timezone: str = Field(default="UTC", description="Timezone for the scheduled time")

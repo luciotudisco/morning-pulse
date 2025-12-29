@@ -8,7 +8,7 @@ class Config:
     DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://localhost/morning_pulse")
     PORT = int(os.getenv("PORT", 5000))
     SECRET_KEY = os.getenv("APP_SECRET_KEY", "dev-secret-key-change-in-production")
-    
+
     # Auth0 Configuration
     AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN", "")
     AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID", "")
