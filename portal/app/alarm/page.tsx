@@ -160,11 +160,7 @@ export default function AlarmPage() {
                   type="button"
                   variant={selectedDays.includes(day.value) ? "default" : "outline"}
                   onClick={() => toggleDay(day.value)}
-                  className={
-                    selectedDays.includes(day.value)
-                      ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white border-purple-600 hover:from-purple-700 hover:to-blue-700"
-                      : ""
-                  }
+                  className="w-full"
                 >
                   {day.short}
                 </Button>
