@@ -32,7 +32,7 @@ def logout():
     """Logout and clear session."""
     auth0 = get_auth0()
     session.clear()
-    return_to_url = url_for("api.home", _external=True)
+    return_to_url = current_app.config['AUTH0_CALLBACK_WEB_URL']
     params = {"returnTo": return_to_url, "client_id": auth0.client_id}
     domain = current_app.config["AUTH0_DOMAIN"]
     logout_url = f"https://{domain}/v2/logout?" + "&".join([f"{k}={v}" for k, v in params.items()])

@@ -36,7 +36,6 @@ export default function AlarmPage() {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-white dark:bg-black p-8">
       <div className="max-w-md mx-auto">
@@ -52,10 +51,6 @@ export default function AlarmPage() {
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
               No nudges scheduled
             </p>
-            <Button onClick={() => router.push("/alarm/new")} variant="outline">
-              <Plus className="w-4 h-4 mr-2" />
-              Create Your First Nudge
-            </Button>
           </div>
         ) : (
           <div className="space-y-2">
