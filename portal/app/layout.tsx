@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className="antialiased flex flex-col min-h-screen font-mono"
+        className="antialiased flex flex-col min-h-screen"
       >
         <LightRays />
         <AuthProvider>{children}</AuthProvider>

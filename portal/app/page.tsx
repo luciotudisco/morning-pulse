@@ -6,10 +6,8 @@ import { RainbowButton } from "@/components/ui/rainbow-button";
 
 export default function Home() {
   return (
-    <div className="bg-background">
-      <main className="container mx-auto px-4 py-16 sm:py-24">
-        <div className="relative mx-auto max-w-2xl overflow-hidden p-8 sm:p-12">
-          <div className="relative z-10 text-center">
+      <main className="container mx-auto p-16 text-center">
+        <div className="mx-auto max-w-2xl">
             <AnimatedShinyText>
               Your personal AI accountability partner
             </AnimatedShinyText>
@@ -23,10 +21,7 @@ export default function Home() {
             <RainbowButton size="lg" className="mt-6">
               <Link href="/alarm">Schedule a Nudge</Link>
             </RainbowButton>
-          </div>
         </div>
       </main>
-
-    </div>
   );
 }

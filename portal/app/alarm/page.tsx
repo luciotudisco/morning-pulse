@@ -2,27 +2,28 @@
 
 import { useState, useEffect, useTransition } from "react";
 import { Plus, Trash2 } from "lucide-react";
+import { format, addDays, startOfWeek } from "date-fns";
 import { toString } from "cronstrue";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { apiClient } from "@/lib/api-client";
 import type { ScheduledCallData } from "@/lib/schemas";
 
-const DAYS_OF_WEEK = [
-  { value: 0, label: "Sunday", short: "Sun" },
-  { value: 1, label: "Monday", short: "Mon" },
-  { value: 2, label: "Tuesday", short: "Tue" },
-  { value: 3, label: "Wednesday", short: "Wed" },
-  { value: 4, label: "Thursday", short: "Thu" },
-  { value: 5, label: "Friday", short: "Fri" },
-  { value: 6, label: "Saturday", short: "Sat" },
-];
+// Generate days of week using date-fns (Monday-Sunday order: 1,2,3,4,5,6,0)
+const DAYS_OF_WEEK = Array.from({ length: 7 }, (_, i) => {
+  const date = addDays(startOfWeek(new Date(2024, 0, 1), { weekStartsOn: 1 }), i);
+  return {
+    value: date.getDay(), // 0 = Sunday, 1 = Monday, etc.
+    short: format(date, "EEE"), // "Mon", "Tue", etc.
+  };
+});
 
-const WEEKDAYS = [1, 2, 3, 4, 5];
 
 export default function AlarmPage() {
   const [alarms, setAlarms] = useState<ScheduledCallData[]>([]);
   const [time, setTime] = useState("07:00");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [selectedDays, setSelectedDays] = useState<number[]>(WEEKDAYS);
+  const [selectedDays, setSelectedDays] = useState<number[]>([1, 2, 3, 4, 5]);
   const [isPending, startTransition] = useTransition();
 
   const handleAuthError = () => {
@@ -95,7 +96,7 @@ export default function AlarmPage() {
         setAlarms((prev) => [...prev, newAlarm]);
         setPhoneNumber("");
         setTime("07:00");
-        setSelectedDays(WEEKDAYS);
+        setSelectedDays([1, 2, 3, 4, 5]);
       });
     } catch (error: any) {
       if (error?.response?.status === 401) {
@@ -152,31 +153,23 @@ export default function AlarmPage() {
             <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
               Days of Week
             </label>
-            <div className="flex flex-wrap gap-2">
+            <ButtonGroup className="flex-wrap" aria-label="Days of week selection">
               {DAYS_OF_WEEK.map((day) => (
-                <button
+                <Button
                   key={day.value}
                   type="button"
+                  variant={selectedDays.includes(day.value) ? "default" : "outline"}
                   onClick={() => toggleDay(day.value)}
-                  className={`px-3 py-1.5 text-sm rounded-md transition-all ${
+                  className={
                     selectedDays.includes(day.value)
-                      ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-md"
-                      : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-                  }`}
+                      ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white border-purple-600 hover:from-purple-700 hover:to-blue-700"
+                      : ""
+                  }
                 >
                   {day.short}
-                </button>
+                </Button>
               ))}
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-              {selectedDays.length === 7 
-                ? "Every day" 
-                : selectedDays.length === 5 && selectedDays.every((d) => WEEKDAYS.includes(d))
-                ? "Weekdays"
-                : selectedDays.length === 2 && selectedDays.every((d) => [0, 6].includes(d))
-                ? "Weekends"
-                : `Selected: ${selectedDays.map((d) => DAYS_OF_WEEK[d].short).join(", ")}`}
-            </p>
+            </ButtonGroup>
           </div>
 
           <div>
