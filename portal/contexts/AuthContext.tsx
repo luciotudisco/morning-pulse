@@ -30,7 +30,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(parsedUser);
         }
       } catch (error) {
-        console.error("Failed to load user from storage:", error);
         localStorage.removeItem(USER_STORAGE_KEY);
       }
     };

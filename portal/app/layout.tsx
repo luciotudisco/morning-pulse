@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 import { LightRays } from "@/components/ui/light-rays";
+import { Toaster } from "@/components/ui/sonner";
 
 
 
@@ -22,6 +23,7 @@ export default function RootLayout({
       >
         <LightRays />
         <AuthProvider>{children}</AuthProvider>
+        <Toaster />
       </body>
     </html>
   );

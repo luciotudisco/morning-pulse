@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function CallbackPage() {
@@ -9,10 +10,14 @@ export default function CallbackPage() {
   const { refreshUser } = useAuth();
 
   useEffect(() => {
-    // After successful login, refresh user data and redirect
     const handleCallback = async () => {
-      await refreshUser();
-      router.push("/alarm");
+      try {
+        await refreshUser();
+        router.push("/");
+      } catch (error) {
+        toast.error("Oops! Something went wrong. Please try again.");
+        router.push("/login");
+      }
     };
     handleCallback();
   }, [router, refreshUser]);

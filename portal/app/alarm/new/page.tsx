@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, ArrowLeft } from "lucide-react";
 import { format, addDays, startOfWeek } from "date-fns";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { apiClient } from "@/lib/api-client";
@@ -60,7 +61,7 @@ export default function NewAlarmPage() {
 
   const handleAddAlarm = async () => {
     if (!phoneNumber.trim()) {
-      alert("Please enter a phone number");
+      toast.error("Please enter a phone number");
       return;
     }
 
@@ -72,6 +73,7 @@ export default function NewAlarmPage() {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
 
+      toast.success("Nudge created successfully!");
       // Redirect to the list page after successful creation
       router.push("/alarm");
     } catch (error: unknown) {
@@ -82,7 +84,9 @@ export default function NewAlarmPage() {
           return;
         }
       }
-      alert(`Error: ${error instanceof Error ? error.message : "Failed to create nudge"}`);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create nudge"
+      );
     }
   };
 

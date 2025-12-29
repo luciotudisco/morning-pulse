@@ -3,6 +3,7 @@
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ScheduledCallItem } from "@/components/ScheduledCallItem";
 import { apiClient } from "@/lib/api-client";
@@ -13,26 +14,13 @@ export default function AlarmPage() {
   const [alarms, setAlarms] = useState<ScheduledCallData[]>([]);
   const [isPending, startTransition] = useTransition();
 
-  const handleAuthError = () => {
-    //window.location.href = "/login";
-  };
-
-
   useEffect(() => {
     const loadAlarms = async () => {
       try {
         const scheduledCalls = await apiClient.listScheduledCalls();
         setAlarms(scheduledCalls);
       } catch (error: unknown) {
-        if (error && typeof error === "object" && "response" in error) {
-          const axiosError = error as { response?: { status?: number } };
-          if (axiosError.response?.status === 401) {
-            handleAuthError();
-            return;
-          }
-        }
-        console.error("Failed to load alarms:", error);
-        alert("Failed to load nudges. Please refresh the page.");
+        toast.error("Oops! Something went wrong. Please refresh the page.");
       }
     };
     loadAlarms();
@@ -42,11 +30,9 @@ export default function AlarmPage() {
   const handleDeleteAlarm = async (callId: number) => {
     try {
       await apiClient.deleteScheduledCall(callId);
-      startTransition(() => {
-        setAlarms((prev) => prev.filter((alarm) => alarm.id !== callId));
-      });
+      setAlarms((prev) => prev.filter((alarm) => alarm.id !== callId));
     } catch (error) {
-      console.error("Failed to delete alarm:", error);
+      toast.error("Oops! Something went wrong. Please try again.");
     }
   };
 
@@ -54,13 +40,10 @@ export default function AlarmPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-black p-8">
       <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-semibold text-black dark:text-white">
-            Scheduled Nudges
-          </h1>
+        <div className="flex items-center justify-end mb-8">
           <Button onClick={() => router.push("/alarm/new")}>
             <Plus className="w-4 h-4 mr-2" />
-            New Nudge
+            New
           </Button>
         </div>
 
