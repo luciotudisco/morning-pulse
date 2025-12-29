@@ -7,7 +7,7 @@ import { Button } from "./ui/button";
 import { LogInIcon } from "lucide-react";
 
 export function Header() {
-  const { user, isLoading, logout } = useAuth();
+  const { user, isLoading, logout, login } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full h-16 justify-between items-center px-4 flex">
@@ -24,6 +24,7 @@ export function Header() {
           ) : (
             <Button
               variant="ghost"
+              onClick={login}
             >
               <LogInIcon className="size-3" />
               Login
