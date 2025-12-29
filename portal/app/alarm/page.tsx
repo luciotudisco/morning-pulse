@@ -2,64 +2,89 @@
 
 import { useState, useEffect, useTransition } from "react";
 import { Plus, Trash2 } from "lucide-react";
+import { toString } from "cronstrue";
 import { apiClient } from "@/lib/api-client";
 import type { ScheduledCallData } from "@/lib/schemas";
+
+const DAYS_OF_WEEK = [
+  { value: 0, label: "Sunday", short: "Sun" },
+  { value: 1, label: "Monday", short: "Mon" },
+  { value: 2, label: "Tuesday", short: "Tue" },
+  { value: 3, label: "Wednesday", short: "Wed" },
+  { value: 4, label: "Thursday", short: "Thu" },
+  { value: 5, label: "Friday", short: "Fri" },
+  { value: 6, label: "Saturday", short: "Sat" },
+];
+
+const WEEKDAYS = [1, 2, 3, 4, 5];
 
 export default function AlarmPage() {
   const [alarms, setAlarms] = useState<ScheduledCallData[]>([]);
   const [time, setTime] = useState("07:00");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedDays, setSelectedDays] = useState<number[]>(WEEKDAYS);
   const [isPending, startTransition] = useTransition();
+
+  const handleAuthError = () => {
+    window.location.href = "/login";
+  };
 
 
   useEffect(() => {
     const loadAlarms = async () => {
-      setIsLoading(true);
       try {
         const scheduledCalls = await apiClient.listScheduledCalls();
         setAlarms(scheduledCalls);
       } catch (error: any) {
-        console.error("Failed to load alarms:", error);
-        // If unauthorized, redirect to login
-        if (error?.response?.status === 401 || error?.message?.includes("401")) {
-          window.location.href = "/login";
+        if (error?.response?.status === 401) {
+          handleAuthError();
           return;
         }
+        console.error("Failed to load alarms:", error);
         alert("Failed to load nudges. Please refresh the page.");
-      } finally {
-        setIsLoading(false);
       }
     };
-
     loadAlarms();
   }, []);
 
-  const timeToSchedulePattern = (timeString: string): string => {
-    // Convert "HH:MM" format to schedule pattern "minute hour * * *" (daily)
+  const timeToSchedulePattern = (timeString: string, days: number[]): string => {
     const [hours, minutes] = timeString.split(":");
-    return `${minutes} ${hours} * * *`;
+    const sortedDays = [...days].sort((a, b) => a - b);
+    
+    let dayPattern = "*";
+    if (days.length === 7) {
+      dayPattern = "*";
+    } else if (days.length === 1) {
+      dayPattern = days[0].toString();
+    } else {
+      const isConsecutive = sortedDays.every((day, idx) => 
+        idx === 0 || day === sortedDays[idx - 1] + 1
+      );
+      dayPattern = isConsecutive 
+        ? `${sortedDays[0]}-${sortedDays[sortedDays.length - 1]}`
+        : sortedDays.join(",");
+    }
+    
+    return `${minutes} ${hours} * * ${dayPattern}`;
   };
 
-  const schedulePatternToTime = (schedulePattern: string): string => {
-    // Extract hour and minute from schedule pattern "minute hour * * *"
-    const parts = schedulePattern.trim().split(/\s+/);
-    if (parts.length >= 2) {
-      const minute = parts[0].padStart(2, "0");
-      const hour = parts[1].padStart(2, "0");
-      return `${hour}:${minute}`;
-    }
-    return "00:00";
+  const toggleDay = (day: number) => {
+    setSelectedDays((prev) => {
+      const newDays = prev.includes(day) 
+        ? prev.filter((d) => d !== day)
+        : [...prev, day].sort((a, b) => a - b);
+      return newDays.length > 0 ? newDays : [day];
+    });
   };
 
   const handleAddAlarm = async () => {
-    if (!phoneNumber) {
+    if (!phoneNumber.trim()) {
       alert("Please enter a phone number");
       return;
     }
 
     try {
-      const schedulePattern = timeToSchedulePattern(time);
+      const schedulePattern = timeToSchedulePattern(time, selectedDays);
       const newAlarm = await apiClient.createScheduledCall({
         schedule_pattern: schedulePattern,
         phone_number: phoneNumber,
@@ -67,17 +92,17 @@ export default function AlarmPage() {
       });
 
       startTransition(() => {
-        setAlarms((prevAlarms) => [...prevAlarms, newAlarm]);
+        setAlarms((prev) => [...prev, newAlarm]);
         setPhoneNumber("");
         setTime("07:00");
+        setSelectedDays(WEEKDAYS);
       });
     } catch (error: any) {
-      if (error?.response?.status === 401 || error?.message?.includes("401")) {
-        window.location.href = "/login";
+      if (error?.response?.status === 401) {
+        handleAuthError();
         return;
       }
-      const errorMessage = error instanceof Error ? error.message : "Failed to create nudge";
-      alert(`Error: ${errorMessage}`);
+      alert(`Error: ${error instanceof Error ? error.message : "Failed to create nudge"}`);
     }
   };
 
@@ -85,21 +110,22 @@ export default function AlarmPage() {
     try {
       await apiClient.deleteScheduledCall(callId);
       startTransition(() => {
-        setAlarms((prevAlarms) => prevAlarms.filter((alarm) => alarm.id !== callId));
+        setAlarms((prev) => prev.filter((alarm) => alarm.id !== callId));
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Failed to delete alarm:", error);
     }
   };
 
-  const formatSchedulePattern = (schedulePattern: string) => {
-    // Parse schedule pattern and display as time
-    const timeString = schedulePatternToTime(schedulePattern);
-    const [hours, minutes] = timeString.split(":");
-    const hour = parseInt(hours);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const displayHour = hour % 12 || 12;
-    return `${displayHour}:${minutes} ${ampm}`;
+  const formatSchedulePattern = (schedulePattern: string): string => {
+    try {
+      return toString(schedulePattern, {
+        throwExceptionOnParseError: false,
+        verbose: false,
+      });
+    } catch {
+      return schedulePattern;
+    }
   };
 
   return (
@@ -120,6 +146,37 @@ export default function AlarmPage() {
               onChange={(e) => setTime(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-900 text-black dark:text-white focus:outline-none focus:border-gray-500 dark:focus:border-gray-500"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
+              Days of Week
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {DAYS_OF_WEEK.map((day) => (
+                <button
+                  key={day.value}
+                  type="button"
+                  onClick={() => toggleDay(day.value)}
+                  className={`px-3 py-1.5 text-sm rounded-md transition-all ${
+                    selectedDays.includes(day.value)
+                      ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-md"
+                      : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  {day.short}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              {selectedDays.length === 7 
+                ? "Every day" 
+                : selectedDays.length === 5 && selectedDays.every((d) => WEEKDAYS.includes(d))
+                ? "Weekdays"
+                : selectedDays.length === 2 && selectedDays.every((d) => [0, 6].includes(d))
+                ? "Weekends"
+                : `Selected: ${selectedDays.map((d) => DAYS_OF_WEEK[d].short).join(", ")}`}
+            </p>
           </div>
 
           <div>
@@ -167,7 +224,7 @@ export default function AlarmPage() {
                     <div className="text-sm text-gray-500 dark:text-gray-400">
                       {alarm.phone_number || "No phone"} • {alarm.timezone}
                     </div>
-                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-1 font-mono">
                       {alarm.schedule_pattern}
                     </div>
                   </div>
