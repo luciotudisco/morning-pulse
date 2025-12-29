@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentUser = await apiClient.getCurrentUser();
       setUser(currentUser);
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(currentUser));
-    } catch (error) {
+    } catch {
       setUser(null);
       localStorage.removeItem(USER_STORAGE_KEY);
     } finally {

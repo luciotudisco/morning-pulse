@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { format, addDays, startOfWeek } from "date-fns";
-import { toString } from "cronstrue";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { ScheduledCallItem } from "@/components/ScheduledCallItem";
 import { apiClient } from "@/lib/api-client";
 import type { ScheduledCallData } from "@/lib/schemas";
 
@@ -36,10 +36,13 @@ export default function AlarmPage() {
       try {
         const scheduledCalls = await apiClient.listScheduledCalls();
         setAlarms(scheduledCalls);
-      } catch (error: any) {
-        if (error?.response?.status === 401) {
-          handleAuthError();
-          return;
+      } catch (error: unknown) {
+        if (error && typeof error === "object" && "response" in error) {
+          const axiosError = error as { response?: { status?: number } };
+          if (axiosError.response?.status === 401) {
+            handleAuthError();
+            return;
+          }
         }
         console.error("Failed to load alarms:", error);
         alert("Failed to load nudges. Please refresh the page.");
@@ -98,10 +101,13 @@ export default function AlarmPage() {
         setTime("07:00");
         setSelectedDays([1, 2, 3, 4, 5]);
       });
-    } catch (error: any) {
-      if (error?.response?.status === 401) {
-        handleAuthError();
-        return;
+    } catch (error: unknown) {
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as { response?: { status?: number } };
+        if (axiosError.response?.status === 401) {
+          handleAuthError();
+          return;
+        }
       }
       alert(`Error: ${error instanceof Error ? error.message : "Failed to create nudge"}`);
     }
@@ -118,16 +124,6 @@ export default function AlarmPage() {
     }
   };
 
-  const formatSchedulePattern = (schedulePattern: string): string => {
-    try {
-      return toString(schedulePattern, {
-        throwExceptionOnParseError: false,
-        verbose: false,
-      });
-    } catch {
-      return schedulePattern;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-white dark:bg-black p-8">
@@ -202,29 +198,11 @@ export default function AlarmPage() {
           ) : (
             <div className="space-y-2">
               {alarms.map((alarm) => (
-                <div
+                <ScheduledCallItem
                   key={alarm.id}
-                  className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-800 rounded"
-                >
-                  <div>
-                    <div className="font-medium text-black dark:text-white">
-                      {formatSchedulePattern(alarm.schedule_pattern)}
-                    </div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {alarm.phone_number || "No phone"} • {alarm.timezone}
-                    </div>
-                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-1 font-mono">
-                      {alarm.schedule_pattern}
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => handleDeleteAlarm(alarm.id)}
-                    className="p-1 text-gray-400 hover:text-red-500"
-                    aria-label="Delete nudge"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
+                  alarm={alarm}
+                  onDelete={handleDeleteAlarm}
+                />
               ))}
             </div>
           )}
