@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 import { RainbowButton } from "@/components/ui/rainbow-button";
-import { LightRays } from "@/components/ui/light-rays";
 
 export default function Home() {
   return (
     <div className="bg-background">
       <main className="container mx-auto px-4 py-16 sm:py-24">
-        <div className="relative mx-auto max-w-2xl overflow-hidden rounded-lg border border-border p-8 sm:p-12">
+        <div className="relative mx-auto max-w-2xl overflow-hidden p-8 sm:p-12">
           <div className="relative z-10 text-center">
             <AnimatedShinyText>
               A wake-up call that actually works
@@ -22,7 +21,6 @@ export default function Home() {
               and hard to ignore.
             </p>
           </div>
-          <LightRays />
         </div>
 
         <section className="mx-auto mt-10 max-w-3xl">
@@ -33,6 +31,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+
     </div>
   );
 }

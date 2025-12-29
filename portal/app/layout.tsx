@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
+import { LightRays } from "@/components/ui/light-rays";
 
 
 
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body
         className="antialiased flex flex-col min-h-screen font-mono"
       >
+        <LightRays />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
