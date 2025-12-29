@@ -1,8 +1,6 @@
 from datetime import UTC
 from datetime import datetime
-from datetime import timezone
 
-from croniter import croniter
 from peewee import AutoField
 from peewee import DateTimeField
 from peewee import Model
@@ -37,6 +35,5 @@ class ScheduledCallModel(Model):
         return ScheduledCall(
             id=self.id,
             schedule_pattern=self.schedule_pattern,
-            timezone=self.timezone,
             phone_number=self.phone_number,
         )
