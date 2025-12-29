@@ -27,7 +27,7 @@ export default function AlarmPage() {
   const [isPending, startTransition] = useTransition();
 
   const handleAuthError = () => {
-    window.location.href = "/login";
+    //window.location.href = "/login";
   };
 
 
@@ -153,14 +153,14 @@ export default function AlarmPage() {
             <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
               Days of Week
             </label>
-            <ButtonGroup className="flex-wrap" aria-label="Days of week selection">
+            <ButtonGroup className="w-full" aria-label="Days of week selection">
               {DAYS_OF_WEEK.map((day) => (
                 <Button
                   key={day.value}
                   type="button"
                   variant={selectedDays.includes(day.value) ? "default" : "outline"}
                   onClick={() => toggleDay(day.value)}
-                  className="w-full"
+                  className="flex-1"
                 >
                   {day.short}
                 </Button>
