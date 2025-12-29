@@ -32,7 +32,7 @@ def before_request():
 
 
 @app.teardown_request
-def teardown_request():
+def teardown_request(exception: Exception | None):
     if not database.is_closed():
         database.close()
 
