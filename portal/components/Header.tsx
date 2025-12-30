@@ -10,9 +10,9 @@ export function Header() {
   const { user, isLoading, logout, login } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 w-full h-16 justify-between items-center px-4 flex bg-white border-b shadow-sm">
+    <header className="sticky top-0 z-50 w-full h-14 justify-between items-center px-4 flex bg-white border-b shadow-sm">
         <Link href="/" className="flex items-center space-x-2 group">
-          <h1 className="text-xl font-semibold font-mono">
+          <h1 className="text-md md:text-lg font-semibold font-mono">
             NUDGE CALLS
           </h1>
         </Link>
@@ -25,6 +25,7 @@ export function Header() {
             <Button
               variant="ghost"
               onClick={login}
+              className="text-sm md:text-base"
             >
               <LogInIcon className="size-3" />
               Login
