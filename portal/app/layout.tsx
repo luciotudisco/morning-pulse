@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
+import { Quicksand } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 import { LightRays } from "@/components/ui/light-rays";
 import { Toaster } from "@/components/ui/sonner";
+
+const quicksand = Quicksand({
+  subsets: ["latin"],
+  variable: "--font-quicksand",
+});
 
 
 
@@ -19,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className="antialiased flex flex-col min-h-screen"
+        className={`${quicksand.variable} antialiased flex flex-col min-h-screen`}
       >
         <LightRays />
         <AuthProvider>{children}</AuthProvider>
