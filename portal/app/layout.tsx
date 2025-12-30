@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 import { LightRays } from "@/components/ui/light-rays";
 import { Toaster } from "@/components/ui/sonner";
+import { DotPattern } from "@/components/ui/dot-pattern";
 
 const karla = Karla({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
         className={`${karla.variable} ${inconsolata.variable} antialiased flex flex-col min-h-screen`}
       >
         <LightRays />
+        <DotPattern glow={true} />
         <AuthProvider>{children}</AuthProvider>
         <Toaster />
       </body>

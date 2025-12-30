@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ScheduledCallItem } from "@/components/ScheduledCallItem";
 import { apiClient } from "@/lib/api-client";
 import type { ScheduledCallData } from "@/lib/schemas";
+import { AnimatedList } from "@/components/ui/animated-list";
 
 export default function AlarmPage() {
   const router = useRouter();
@@ -53,7 +54,7 @@ export default function AlarmPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <AnimatedList>
             {alarms.map((alarm) => (
               <ScheduledCallItem
                 key={alarm.id}
@@ -61,7 +62,7 @@ export default function AlarmPage() {
                 onDelete={handleDeleteAlarm}
               />
             ))}
-          </div>
+          </AnimatedList>
         )}
       </div>
     </div>

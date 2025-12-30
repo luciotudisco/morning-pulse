@@ -18,7 +18,7 @@ export default function Home() {
               Schedule a nudge call to help you wake up, hit the gym,
               or get started on your goals. Friendly, persistent, and effective.
             </p>
-            <RainbowButton size="lg" className="mt-6">
+            <RainbowButton size="lg" className="mt-6 md:w-auto w-full text-base">
               <Link href="/alarm">Schedule a Nudge</Link>
             </RainbowButton>
         </div>

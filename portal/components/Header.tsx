@@ -16,7 +16,7 @@ export function Header() {
             NUDGE CALLS
           </h1>
         </Link>
-        <nav>
+        <div className="flex items-center">
           {isLoading ? (
             <div className="h-8 w-8 rounded-full" />
           ) : user ? (
@@ -31,7 +31,7 @@ export function Header() {
               Login
             </Button>
           )}
-        </nav>
+        </div>
     </header>
   );
 }
