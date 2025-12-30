@@ -40,7 +40,7 @@ export default function AlarmPage() {
     <div className="min-h-screen bg-white dark:bg-black p-8">
       <div className="max-w-md mx-auto">
         <div className="flex items-center justify-end mb-8">
-          <Button onClick={() => router.push("/alarm/new")}>
+          <Button onClick={() => router.push("/scheduled_calls/new")}>
             <Plus className="w-4 h-4 mr-2" />
             New
           </Button>

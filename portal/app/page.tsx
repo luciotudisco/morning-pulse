@@ -22,7 +22,7 @@ export default function Home() {
               or get started on your goals. Friendly, persistent, and effective.
             </p>
             <RainbowButton size="lg" className="mt-6 md:w-auto w-full text-base">
-              <Link href="/alarm">Schedule a Nudge</Link>
+              <Link href="/scheduled_calls">Schedule a Nudge</Link>
             </RainbowButton>
         </div>
       </main>
