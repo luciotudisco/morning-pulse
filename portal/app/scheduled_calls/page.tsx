@@ -10,7 +10,7 @@ import { apiClient } from "@/lib/api-client";
 import type { ScheduledCallData } from "@/lib/schemas";
 import { Loading } from "@/components/Loading";
 
-export default function AlarmPage() {
+export default function ScheduledCallsPage() {
   const router = useRouter();
   const [alarms, setAlarms] = useState<ScheduledCallData[]>([]);
   const [isPending, startTransition] = useTransition();
@@ -20,24 +20,30 @@ export default function AlarmPage() {
       try {
         const scheduledCalls = await apiClient.listScheduledCalls();
         setAlarms(scheduledCalls);
-      } catch (error: unknown) {
+      } catch {
         toast.error("Oops! Something went wrong. Please refresh the page.");
       }
     });
   }, []);
 
 
-  const handleDeleteAlarm = async (callId: number) => {
+  const handleDeleteScheduledCall = async (callId: number) => {
     try {
       await apiClient.deleteScheduledCall(callId);
       setAlarms((prev) => prev.filter((alarm) => alarm.id !== callId));
-    } catch (error) {
+    } catch {
       toast.error("Oops! Something went wrong. Please try again.");
     }
   };
 
   if (isPending) {
     return <div className="min-h-screen p-8"><Loading size="lg"/></div>
+  }
+
+  if (alarms.length === 0) {
+    return <div className="min-h-screen p-8">
+      <Loading size="lg"/>
+      </div>
   }
 
   return (
@@ -49,24 +55,15 @@ export default function AlarmPage() {
             New
           </Button>
         </div>
-
-        {alarms.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
-              No nudges scheduled
-            </p>
-          </div>
-        ) : (
           <div className="space-y-2">
             {alarms.map((alarm) => (
               <ScheduledCallItem
                 key={alarm.id}
                 alarm={alarm}
-                onDelete={handleDeleteAlarm}
+                onDelete={handleDeleteScheduledCall}
               />
             ))}
           </div>
-        )}
       </div>
     </div>
   );

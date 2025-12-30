@@ -84,7 +84,7 @@ export default function NewAlarmPage() {
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         });
         router.push("/scheduled_calls");
-      } catch (error: unknown) {
+      } catch {
         toast.error("Oops! Something went wrong. Please try again.");
       }
     });

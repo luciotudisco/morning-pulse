@@ -14,7 +14,7 @@ export default function CallbackPage() {
       try {
         await refreshUser();
         router.push("/");
-      } catch (error) {
+      } catch {
         toast.error("Oops! Something went wrong. Please try again.");
         router.push("/login");
       }

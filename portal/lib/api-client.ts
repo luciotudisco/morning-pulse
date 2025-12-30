@@ -1,9 +1,8 @@
-import axios, { AxiosInstance, AxiosError } from "axios";
+import axios, { AxiosInstance } from "axios";
 import type { ScheduledCallData, CreateScheduledCallRequest, User } from "@/lib/schemas";
 
 export class ScheduledCall {
   private axiosInstance: AxiosInstance;
-  private HTTP_STATUS_UNAUTHORIZED = 401;
 
   constructor() {
     const baseURL = process.env.NEXT_PUBLIC_API_URL

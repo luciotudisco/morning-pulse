@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
-      } catch (error) {
+      } catch {
         localStorage.removeItem(USER_STORAGE_KEY);
       }
     };
@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentUser = await apiClient.getCurrentUser();
       setUser(currentUser);
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(currentUser));
-    } catch (error) {
+    } catch {
       setUser(null);
       localStorage.removeItem(USER_STORAGE_KEY);
     }
