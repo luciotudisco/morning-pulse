@@ -1,12 +1,12 @@
-"use client";
+"use client"
 
-import { Trash2 } from "lucide-react";
-import { toString } from "cronstrue";
-import type { ScheduledCallData } from "@/lib/schemas";
+import { Trash2 } from "lucide-react"
+import { toString } from "cronstrue"
+import type { ScheduledCallData } from "@/lib/schemas"
 
 interface ScheduledCallItemProps {
-  alarm: ScheduledCallData;
-  onDelete: (id: number) => void;
+  alarm: ScheduledCallData
+  onDelete: (id: number) => void
 }
 
 export function ScheduledCallItem({ alarm, onDelete }: ScheduledCallItemProps) {
@@ -15,11 +15,11 @@ export function ScheduledCallItem({ alarm, onDelete }: ScheduledCallItemProps) {
       return toString(schedulePattern, {
         throwExceptionOnParseError: false,
         verbose: false,
-      });
+      })
     } catch {
-      return schedulePattern;
+      return schedulePattern
     }
-  };
+  }
 
   return (
     <div className="flex items-center justify-between p-3 border rounded">
@@ -39,5 +39,5 @@ export function ScheduledCallItem({ alarm, onDelete }: ScheduledCallItemProps) {
         <Trash2 className="w-4 h-4" />
       </button>
     </div>
-  );
+  )
 }

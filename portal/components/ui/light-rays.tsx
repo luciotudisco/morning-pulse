@@ -140,7 +140,7 @@ export function LightRays({
             } as CSSProperties
           }
         />
-        {rays.map((ray) => (
+        {rays.map(ray => (
           <Ray key={ray.id} {...ray} />
         ))}
       </div>

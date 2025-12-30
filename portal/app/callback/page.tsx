@@ -1,26 +1,26 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { useAuth } from "@/contexts/AuthContext"
 
 export default function CallbackPage() {
-  const router = useRouter();
-  const { refreshUser } = useAuth();
+  const router = useRouter()
+  const { refreshUser } = useAuth()
 
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        await refreshUser();
-        router.push("/");
+        await refreshUser()
+        router.push("/")
       } catch {
-        toast.error("Oops! Something went wrong. Please try again.");
-        router.push("/login");
+        toast.error("Oops! Something went wrong. Please try again.")
+        router.push("/login")
       }
-    };
-    handleCallback();
-  }, [router, refreshUser]);
+    }
+    handleCallback()
+  }, [router, refreshUser])
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-8">
@@ -28,6 +28,5 @@ export default function CallbackPage() {
         <p className="text-muted-foreground mb-8">Completing login...</p>
       </div>
     </div>
-  );
+  )
 }
-
