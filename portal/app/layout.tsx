@@ -36,7 +36,6 @@ export default function RootLayout({
         className={`${karla.variable} ${inconsolata.variable} antialiased flex flex-col min-h-screen`}
       >
         <LightRays />
-        <DotPattern glow={true} />
         <AuthProvider>{children}</AuthProvider>
         <Toaster />
       </body>

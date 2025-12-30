@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 import { RainbowButton } from "@/components/ui/rainbow-button";
+import { DotPattern } from "@/components/ui/dot-pattern";
 
 export default function Home() {
   return (
+    <>
+      <DotPattern glow={true}  />
       <main className="container mx-auto px-4 md:px-16 text-center flex flex-col min-h-screen pt-[15vh]">
         <div className="mx-auto w-full md:max-w-2xl">
             <AnimatedShinyText className="text-foreground">
@@ -23,5 +26,6 @@ export default function Home() {
             </RainbowButton>
         </div>
       </main>
+      </>
   );
 }
