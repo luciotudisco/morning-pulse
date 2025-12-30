@@ -10,8 +10,10 @@ import { apiClient } from "@/lib/api-client"
 import type { ScheduledCallData } from "@/lib/schemas"
 import { Loading } from "@/components/Loading"
 import { RainbowButton } from "@/components/ui/rainbow-button"
+import { useAuth } from "@/contexts/AuthContext"
 
 export default function ScheduledCallsPage() {
+  const { isAuthenticated } = useAuth();
   const router = useRouter()
   const [alarms, setAlarms] = useState<ScheduledCallData[]>([])
   const [isPending, startTransition] = useTransition()
@@ -19,6 +21,10 @@ export default function ScheduledCallsPage() {
   useEffect(() => {
     startTransition(async () => {
       try {
+        if (!isAuthenticated) {
+          router.push('/login')
+          return
+        }
         const scheduledCalls = await apiClient.listScheduledCalls()
         setAlarms(scheduledCalls)
       } catch {
@@ -38,7 +44,7 @@ export default function ScheduledCallsPage() {
 
   if (isPending) {
     return (
-      <div className="min-h-screen p-8 flex flex-col items-center pt-[33vh]">
+      <div className="min-h-screen p-8 flex flex-col items-center pt-[10vh]">
         <Loading size="lg" />
       </div>
     )
@@ -59,7 +65,7 @@ export default function ScheduledCallsPage() {
           onClick={() => router.push("/scheduled_calls/new")}
         >
           <Plus className="w-4 h-4 mr-2" />
-          Schedule Your First Nudge
+          Create Your First Nudge
         </RainbowButton>
       </div>
     )
