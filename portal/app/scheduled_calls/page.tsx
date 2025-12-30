@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ScheduledCallItem } from "@/components/ScheduledCallItem";
 import { apiClient } from "@/lib/api-client";
 import type { ScheduledCallData } from "@/lib/schemas";
+import { Loading } from "@/components/Loading";
 
 export default function AlarmPage() {
   const router = useRouter();
@@ -15,15 +16,14 @@ export default function AlarmPage() {
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    const loadAlarms = async () => {
+    startTransition(async () => {
       try {
         const scheduledCalls = await apiClient.listScheduledCalls();
         setAlarms(scheduledCalls);
       } catch (error: unknown) {
         toast.error("Oops! Something went wrong. Please refresh the page.");
       }
-    };
-    loadAlarms();
+    });
   }, []);
 
 
@@ -36,8 +36,12 @@ export default function AlarmPage() {
     }
   };
 
+  if (isPending) {
+    return <div className="min-h-screen p-8"><Loading /></div>
+  }
+
   return (
-    <div className="min-h-screen bg-white dark:bg-black p-8">
+    <div className="min-h-screen p-8">
       <div className="max-w-md mx-auto">
         <div className="flex items-center justify-end mb-8">
           <Button onClick={() => router.push("/scheduled_calls/new")}>
