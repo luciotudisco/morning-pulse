@@ -37,7 +37,7 @@ export default function AlarmPage() {
   };
 
   if (isPending) {
-    return <div className="min-h-screen p-8"><Loading /></div>
+    return <div className="min-h-screen p-8"><Loading size="lg"/></div>
   }
 
   return (
