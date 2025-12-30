@@ -9,6 +9,7 @@ import { ScheduledCallItem } from "@/components/ScheduledCallItem";
 import { apiClient } from "@/lib/api-client";
 import type { ScheduledCallData } from "@/lib/schemas";
 import { Loading } from "@/components/Loading";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 export default function ScheduledCallsPage() {
   const router = useRouter();
@@ -37,12 +38,17 @@ export default function ScheduledCallsPage() {
   };
 
   if (isPending) {
-    return <div className="min-h-screen p-8"><Loading size="lg"/></div>
+    return <div className="min-h-screen p-8 flex flex-col items-center pt-[33vh]"><Loading size="lg"/></div>
   }
 
   if (alarms.length === 0) {
-    return <div className="min-h-screen p-8">
-      <Loading size="lg"/>
+    return <div className="min-h-screen p-[10vh] flex flex-col items-center">
+      <p className="text-center text-lg font-medium mb-2">You don't have any nudge yet</p>
+      <p className="text-center text-sm text-muted-foreground mb-6 max-w-md">Get started by scheduling your first nudge.</p>
+      <RainbowButton size="lg" className="text-base" onClick={() => router.push("/scheduled_calls/new")}>
+        <Plus className="w-4 h-4 mr-2" />
+        Schedule Your First Nudge
+      </RainbowButton>
       </div>
   }
 
