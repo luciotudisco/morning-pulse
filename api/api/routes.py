@@ -6,6 +6,7 @@ from api.auth import get_user_info
 from api.auth import requires_auth
 from models.scheduled_call_dao import ScheduledCallDAO
 from schema.scheduled_call import CreateScheduledCallRequest
+from schema.scheduled_call import UpdateScheduledCallRequest
 
 
 @bp.route("/auth/me", methods=["GET"])
@@ -37,6 +38,20 @@ def create_scheduled_call(body: CreateScheduledCallRequest):
         timezone=body.timezone,
     )
     return jsonify(call.model_dump(mode="json")), 201
+
+
+@bp.route("/scheduled_calls/<int:call_id>", methods=["PUT"])
+@requires_auth
+@validate(body=UpdateScheduledCallRequest)
+def update_scheduled_call(call_id: int, body: UpdateScheduledCallRequest):
+    """Update an existing scheduled call for the current logged-in user."""
+    user_id = get_user_info().user_id
+    call = ScheduledCallDAO.get_by_id_and_user_id(call_id, user_id)
+    if not call:
+        return jsonify({"error": "Scheduled call not found"}), 404
+    call.schedule_pattern = body.schedule_pattern
+    call.phone_number = body.phone_number
+    return jsonify(call.model_dump(mode="json")), 200
 
 
 @bp.route("/scheduled_calls/<int:call_id>", methods=["DELETE"])
