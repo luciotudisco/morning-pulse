@@ -10,13 +10,13 @@ import { apiClient } from "@/lib/api-client";
 
 // Day name map: day value -> { short, long }
 const DAY_NAMES: Record<number, { short: string; long: string }> = {
-  0: { short: "Sun", long: "Sunday" },
-  1: { short: "Mon", long: "Monday" },
-  2: { short: "Tue", long: "Tuesday" },
-  3: { short: "Wed", long: "Wednesday" },
-  4: { short: "Thu", long: "Thursday" },
-  5: { short: "Fri", long: "Friday" },
-  6: { short: "Sat", long: "Saturday" },
+  0: { short: "Su", long: "Sunday" },
+  1: { short: "Mo", long: "Monday" },
+  2: { short: "Tu", long: "Tuesday" },
+  3: { short: "We", long: "Wednesday" },
+  4: { short: "Th", long: "Thursday" },
+  5: { short: "Fr", long: "Friday" },
+  6: { short: "Sa", long: "Saturday" },
 };
 
 // Generate days of week (Monday-Sunday order: 1,2,3,4,5,6,0)
@@ -76,8 +76,6 @@ export default function NewAlarmPage() {
         phone_number: phoneNumber,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
-
-      toast.success("Nudge created successfully!");
       router.push("/alarm");
     } catch (error: unknown) {
         toast.error("Oops! Something went wrong. Please try again.");
@@ -123,7 +121,7 @@ export default function NewAlarmPage() {
                 <Button
                   key={day.value}
                   type="button"
-                  variant={selectedDays.includes(day.value) ? "default" : "outline"}
+                  variant={selectedDays.includes(day.value) ? "secondary" : "outline"}
                   onClick={() => toggleDay(day.value)}
                   className="flex-1"
                 >
