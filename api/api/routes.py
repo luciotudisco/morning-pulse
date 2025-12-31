@@ -45,11 +45,14 @@ def create_scheduled_call(body: CreateScheduledCallRequest):
 def update_scheduled_call(call_id: int, body: UpdateScheduledCallRequest):
     """Update an existing scheduled call for the current logged-in user."""
     user_id = get_user_info().user_id
-    call = ScheduledCallDAO.get_by_id_and_user_id(call_id, user_id)
+    call = ScheduledCallDAO.update(
+        call_id=call_id,
+        user_id=user_id,
+        schedule_pattern=body.schedule_pattern,
+        phone_number=body.phone_number,
+    )
     if not call:
         return jsonify({"error": "Scheduled call not found"}), 404
-    call.schedule_pattern = body.schedule_pattern
-    call.phone_number = body.phone_number
     return jsonify(call.model_dump(mode="json")), 200
 
 
