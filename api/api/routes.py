@@ -35,7 +35,6 @@ def create_scheduled_call(body: CreateScheduledCallRequest):
         user_id=get_user_info().user_id,
         schedule_pattern=body.schedule_pattern,
         phone_number=body.phone_number,
-        timezone=body.timezone,
     )
     return jsonify(call.model_dump(mode="json")), 201
 
