@@ -242,7 +242,7 @@ export default function ScheduledCallFormPage() {
                       <Button
                         key={day}
                         type="button"
-                        variant={isSelected ? "secondary" : "outline"}
+                        variant={isSelected ? "default" : "outline"}
                         onClick={() => {
                           const newDays = isSelected
                             ? field.value.filter(d => d !== dayNum)
