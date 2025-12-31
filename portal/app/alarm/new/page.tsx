@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { useTransition } from "react"
-import { useRouter } from "next/navigation"
-import { Plus, ArrowLeft } from "lucide-react"
-import { toast } from "sonner"
-import { useForm, Controller } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { ButtonGroup } from "@/components/ui/button-group"
-import { apiClient } from "@/lib/api-client"
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { Plus, ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { apiClient } from "@/lib/api-client";
 
 const DAY_NAMES: Record<number, { short: string; long: string }> = {
   0: { short: "Su", long: "Sunday" },
@@ -19,7 +19,7 @@ const DAY_NAMES: Record<number, { short: string; long: string }> = {
   4: { short: "Th", long: "Thursday" },
   5: { short: "Fr", long: "Friday" },
   6: { short: "Sa", long: "Saturday" },
-}
+};
 
 const alarmFormSchema = z.object({
   time: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/, {
@@ -31,13 +31,13 @@ const alarmFormSchema = z.object({
   selectedDays: z.array(z.number().int().min(0).max(6)).min(1, {
     message: "Please select at least one day",
   }),
-})
+});
 
-type AlarmFormData = z.infer<typeof alarmFormSchema>
+type AlarmFormData = z.infer<typeof alarmFormSchema>;
 
 export default function NewAlarmPage() {
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const {
     register,
@@ -51,49 +51,43 @@ export default function NewAlarmPage() {
       phoneNumber: "",
       selectedDays: [1, 2, 3, 4, 5],
     },
-  })
+  });
 
-  const timeToSchedulePattern = (
-    timeString: string,
-    days: number[]
-  ): string => {
-    const [hours, minutes] = timeString.split(":")
-    const sortedDays = [...days].sort((a, b) => a - b)
-
-    let dayPattern = "*"
+  const timeToSchedulePattern = (timeString: string, days: number[]): string => {
+    const [hours, minutes] = timeString.split(":");
+    const sortedDays = [...days].sort((a, b) => a - b);
+    
+    let dayPattern = "*";
     if (days.length === 7) {
-      dayPattern = "*"
+      dayPattern = "*";
     } else if (days.length === 1) {
-      dayPattern = days[0].toString()
+      dayPattern = days[0].toString();
     } else {
-      const isConsecutive = sortedDays.every(
-        (day, idx) => idx === 0 || day === sortedDays[idx - 1] + 1
-      )
-      dayPattern = isConsecutive
+      const isConsecutive = sortedDays.every((day, idx) => 
+        idx === 0 || day === sortedDays[idx - 1] + 1
+      );
+      dayPattern = isConsecutive 
         ? `${sortedDays[0]}-${sortedDays[sortedDays.length - 1]}`
-        : sortedDays.join(",")
+        : sortedDays.join(",");
     }
-
-    return `${minutes} ${hours} * * ${dayPattern}`
-  }
+    
+    return `${minutes} ${hours} * * ${dayPattern}`;
+  };
 
   const onSubmit = async (data: AlarmFormData) => {
     startTransition(async () => {
       try {
-        const schedulePattern = timeToSchedulePattern(
-          data.time,
-          data.selectedDays
-        )
+        const schedulePattern = timeToSchedulePattern(data.time, data.selectedDays);
         await apiClient.createScheduledCall({
           schedule_pattern: schedulePattern,
           phone_number: data.phoneNumber,
-        })
-        router.push("/scheduled_calls")
-      } catch {
-        toast.error("Oops! Something went wrong. Please try again.")
+        });
+        router.push("/alarm");
+      } catch (error: unknown) {
+        toast.error("Oops! Something went wrong. Please try again.");
       }
-    })
-  }
+    });
+  };
 
   return (
     <div className="min-h-screen bg-white dark:bg-black p-8">
@@ -102,7 +96,7 @@ export default function NewAlarmPage() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => router.push("/scheduled_calls")}
+            onClick={() => router.push("/alarm")}
             aria-label="Back to scheduled calls"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -135,13 +129,10 @@ export default function NewAlarmPage() {
               name="selectedDays"
               control={control}
               render={({ field }) => (
-                <ButtonGroup
-                  className="w-full"
-                  aria-label="Days of week selection"
-                >
-                  {Object.keys(DAY_NAMES).map(day => {
-                    const dayNum = parseInt(day)
-                    const isSelected = field.value.includes(dayNum)
+                <ButtonGroup className="w-full" aria-label="Days of week selection">
+                  {Object.keys(DAY_NAMES).map((day) => {
+                    const dayNum = parseInt(day);
+                    const isSelected = field.value.includes(dayNum);
                     return (
                       <Button
                         key={day}
@@ -149,25 +140,21 @@ export default function NewAlarmPage() {
                         variant={isSelected ? "secondary" : "outline"}
                         onClick={() => {
                           const newDays = isSelected
-                            ? field.value.filter(d => d !== dayNum)
-                            : [...field.value, dayNum].sort((a, b) => a - b)
-                          field.onChange(
-                            newDays.length > 0 ? newDays : [dayNum]
-                          )
+                            ? field.value.filter((d) => d !== dayNum)
+                            : [...field.value, dayNum].sort((a, b) => a - b);
+                          field.onChange(newDays.length > 0 ? newDays : [dayNum]);
                         }}
                         className="flex-1"
                       >
                         {DAY_NAMES[dayNum].short}
                       </Button>
-                    )
+                    );
                   })}
                 </ButtonGroup>
               )}
             />
             {errors.selectedDays && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.selectedDays.message}
-              </p>
+              <p className="mt-1 text-xs text-red-500">{errors.selectedDays.message}</p>
             )}
           </div>
 
@@ -182,9 +169,7 @@ export default function NewAlarmPage() {
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-900 text-black dark:text-white focus:outline-none focus:border-gray-500 dark:focus:border-gray-500"
             />
             {errors.phoneNumber && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.phoneNumber.message}
-              </p>
+              <p className="mt-1 text-xs text-red-500">{errors.phoneNumber.message}</p>
             )}
           </div>
 
@@ -200,5 +185,6 @@ export default function NewAlarmPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }
+

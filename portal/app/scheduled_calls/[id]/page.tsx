@@ -1,8 +1,8 @@
 "use client"
 
-import { useTransition } from "react"
-import { useRouter } from "next/navigation"
-import { Plus, ArrowLeft } from "lucide-react"
+import { useTransition, useEffect, useState } from "react"
+import { useRouter, useParams } from "next/navigation"
+import { Plus, Save, ArrowLeft } from "lucide-react"
 import { toast } from "sonner"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -10,6 +10,7 @@ import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { apiClient } from "@/lib/api-client"
+import { Loading } from "@/components/Loading"
 
 const DAY_NAMES: Record<number, { short: string; long: string }> = {
   0: { short: "Su", long: "Sunday" },
@@ -35,14 +36,59 @@ const alarmFormSchema = z.object({
 
 type AlarmFormData = z.infer<typeof alarmFormSchema>
 
-export default function NewAlarmPage() {
+/**
+ * Parse a cron schedule pattern to extract time and days
+ * @param schedulePattern - Cron pattern in format "minute hour * * dayPattern"
+ * @returns Object with time (HH:mm) and selectedDays (array of day numbers 0-6)
+ */
+function parseSchedulePattern(schedulePattern: string): {
+  time: string
+  selectedDays: number[]
+} {
+  const parts = schedulePattern.trim().split(/\s+/)
+  if (parts.length !== 5) {
+    return { time: "07:00", selectedDays: [1, 2, 3, 4, 5] }
+  }
+
+  const minutes = parts[0].padStart(2, "0")
+  const hours = parts[1].padStart(2, "0")
+  const time = `${hours}:${minutes}`
+
+  const dayPattern = parts[4]
+  let selectedDays: number[] = []
+
+  if (dayPattern === "*") {
+    // All days
+    selectedDays = [0, 1, 2, 3, 4, 5, 6]
+  } else if (dayPattern.includes(",")) {
+    // Comma-separated days (e.g., "1,3,5")
+    selectedDays = dayPattern.split(",").map(d => parseInt(d.trim()))
+  } else if (dayPattern.includes("-")) {
+    // Range of days (e.g., "1-5")
+    const [start, end] = dayPattern.split("-").map(d => parseInt(d.trim()))
+    selectedDays = Array.from({ length: end - start + 1 }, (_, i) => start + i)
+  } else {
+    // Single day
+    selectedDays = [parseInt(dayPattern)]
+  }
+
+  return { time, selectedDays }
+}
+
+export default function ScheduledCallFormPage() {
   const router = useRouter()
+  const params = useParams()
+  const id = params.id as string
+  const isEditMode = id !== "new"
+  const callId = isEditMode ? parseInt(id) : null
   const [isPending, startTransition] = useTransition()
+  const [isLoading, setIsLoading] = useState(isEditMode)
 
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<AlarmFormData>({
     resolver: zodResolver(alarmFormSchema),
@@ -52,6 +98,38 @@ export default function NewAlarmPage() {
       selectedDays: [1, 2, 3, 4, 5],
     },
   })
+
+  useEffect(() => {
+    if (!isEditMode) {
+      setIsLoading(false)
+      return
+    }
+
+    const loadScheduledCall = async () => {
+      try {
+        const scheduledCalls = await apiClient.listScheduledCalls()
+        const call = scheduledCalls.find(c => c.id === callId)
+        if (!call) {
+          toast.error("Scheduled call not found")
+          router.push("/scheduled_calls")
+          return
+        }
+        const { time, selectedDays } = parseSchedulePattern(
+          call.schedule_pattern
+        )
+        reset({
+          time,
+          phoneNumber: call.phone_number || "",
+          selectedDays,
+        })
+        setIsLoading(false)
+      } catch {
+        toast.error("Failed to load scheduled call")
+        router.push("/scheduled_calls")
+      }
+    }
+    loadScheduledCall()
+  }, [callId, isEditMode, reset, router])
 
   const timeToSchedulePattern = (
     timeString: string,
@@ -84,15 +162,33 @@ export default function NewAlarmPage() {
           data.time,
           data.selectedDays
         )
-        await apiClient.createScheduledCall({
-          schedule_pattern: schedulePattern,
-          phone_number: data.phoneNumber,
-        })
+
+        if (isEditMode && callId) {
+          await apiClient.updateScheduledCall(callId, {
+            schedule_pattern: schedulePattern,
+            phone_number: data.phoneNumber,
+          })
+          toast.success("Nudge updated successfully")
+        } else {
+          await apiClient.createScheduledCall({
+            schedule_pattern: schedulePattern,
+            phone_number: data.phoneNumber,
+          })
+          toast.success("Nudge created successfully")
+        }
         router.push("/scheduled_calls")
       } catch {
         toast.error("Oops! Something went wrong. Please try again.")
       }
     })
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen p-8 flex flex-col items-center pt-[33vh]">
+        <Loading size="lg" />
+      </div>
+    )
   }
 
   return (
@@ -108,7 +204,7 @@ export default function NewAlarmPage() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h1 className="text-2xl font-semibold text-black dark:text-white">
-            New Nudge
+            {isEditMode ? "Edit Nudge" : "New Nudge"}
           </h1>
         </div>
 
@@ -194,11 +290,21 @@ export default function NewAlarmPage() {
             className="w-full"
             size="lg"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            {isPending ? "Creating..." : "Create Nudge"}
+            {isEditMode ? (
+              <>
+                <Save className="w-4 h-4 mr-2" />
+                {isPending ? "Updating..." : "Update Nudge"}
+              </>
+            ) : (
+              <>
+                <Plus className="w-4 h-4 mr-2" />
+                {isPending ? "Creating..." : "Create Nudge"}
+              </>
+            )}
           </Button>
         </form>
       </div>
     </div>
   )
 }
+

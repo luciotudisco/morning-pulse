@@ -31,7 +31,7 @@ export default function ScheduledCallsPage() {
         toast.error("Oops! Something went wrong. Please refresh the page.")
       }
     })
-  }, [])
+  }, [isAuthenticated])
 
   const handleDeleteScheduledCall = async (callId: number) => {
     try {
@@ -84,7 +84,7 @@ export default function ScheduledCallsPage() {
           {alarms.map(alarm => (
             <ScheduledCallItem
               key={alarm.id}
-              alarm={alarm}
+              scheduledCall={alarm}
               onDelete={handleDeleteScheduledCall}
             />
           ))}

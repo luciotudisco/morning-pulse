@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from "axios"
 import type {
   ScheduledCallData,
   CreateScheduledCallRequest,
+  UpdateScheduledCallRequest,
   User,
 } from "@/lib/schemas"
 
@@ -29,6 +30,17 @@ export class ScheduledCall {
   ): Promise<ScheduledCallData> {
     const response = await this.axiosInstance.post<ScheduledCallData>(
       "/scheduled_calls",
+      request
+    )
+    return response.data
+  }
+
+  async updateScheduledCall(
+    callId: number,
+    request: UpdateScheduledCallRequest
+  ): Promise<ScheduledCallData> {
+    const response = await this.axiosInstance.put<ScheduledCallData>(
+      `/scheduled_calls/${callId}`,
       request
     )
     return response.data
